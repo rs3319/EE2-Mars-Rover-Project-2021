@@ -1,0 +1,9 @@
+*/db/*
+*/output_files/*
+*/incremental_db/*
+*.bak
+*/Qsys/synthesis/*
+*/Qsys/testbench/*
+*/simulation/*
+**/obj/*
+**/.metadata/*
