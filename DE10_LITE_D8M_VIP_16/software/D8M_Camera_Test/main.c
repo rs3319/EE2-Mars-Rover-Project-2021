@@ -4,6 +4,9 @@
 #include "mipi_camera_config.h"
 #include "mipi_bridge_config.h"
 #include "auto_focus.h"
+#include "altera_avalon_uart.h"
+#include "altera_avalon_uart_fd.h"
+#include "altera_avalon_uart_regs.h"
 #include <fcntl.h>
 #include <unistd.h>
 

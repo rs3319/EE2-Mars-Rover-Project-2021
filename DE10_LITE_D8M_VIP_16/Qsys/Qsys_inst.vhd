@@ -41,7 +41,9 @@
 			terasic_camera_0_conduit_end_D            : in    std_logic_vector(11 downto 0) := (others => 'X'); -- D
 			terasic_camera_0_conduit_end_FVAL         : in    std_logic                     := 'X';             -- FVAL
 			terasic_camera_0_conduit_end_LVAL         : in    std_logic                     := 'X';             -- LVAL
-			terasic_camera_0_conduit_end_PIXCLK       : in    std_logic                     := 'X'              -- PIXCLK
+			terasic_camera_0_conduit_end_PIXCLK       : in    std_logic                     := 'X';             -- PIXCLK
+			uart_0_external_connection_rxd            : in    std_logic                     := 'X';             -- rxd
+			uart_0_external_connection_txd            : out   std_logic                                         -- txd
 		);
 	end component Qsys;
 
@@ -88,6 +90,8 @@
 			terasic_camera_0_conduit_end_D            => CONNECTED_TO_terasic_camera_0_conduit_end_D,            --     terasic_camera_0_conduit_end.D
 			terasic_camera_0_conduit_end_FVAL         => CONNECTED_TO_terasic_camera_0_conduit_end_FVAL,         --                                 .FVAL
 			terasic_camera_0_conduit_end_LVAL         => CONNECTED_TO_terasic_camera_0_conduit_end_LVAL,         --                                 .LVAL
-			terasic_camera_0_conduit_end_PIXCLK       => CONNECTED_TO_terasic_camera_0_conduit_end_PIXCLK        --                                 .PIXCLK
+			terasic_camera_0_conduit_end_PIXCLK       => CONNECTED_TO_terasic_camera_0_conduit_end_PIXCLK,       --                                 .PIXCLK
+			uart_0_external_connection_rxd            => CONNECTED_TO_uart_0_external_connection_rxd,            --       uart_0_external_connection.rxd
+			uart_0_external_connection_txd            => CONNECTED_TO_uart_0_external_connection_txd             --                                 .txd
 		);
 

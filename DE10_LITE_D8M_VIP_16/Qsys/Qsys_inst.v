@@ -40,6 +40,8 @@
 		.terasic_camera_0_conduit_end_D            (<connected-to-terasic_camera_0_conduit_end_D>),            //     terasic_camera_0_conduit_end.D
 		.terasic_camera_0_conduit_end_FVAL         (<connected-to-terasic_camera_0_conduit_end_FVAL>),         //                                 .FVAL
 		.terasic_camera_0_conduit_end_LVAL         (<connected-to-terasic_camera_0_conduit_end_LVAL>),         //                                 .LVAL
-		.terasic_camera_0_conduit_end_PIXCLK       (<connected-to-terasic_camera_0_conduit_end_PIXCLK>)        //                                 .PIXCLK
+		.terasic_camera_0_conduit_end_PIXCLK       (<connected-to-terasic_camera_0_conduit_end_PIXCLK>),       //                                 .PIXCLK
+		.uart_0_external_connection_rxd            (<connected-to-uart_0_external_connection_rxd>),            //       uart_0_external_connection.rxd
+		.uart_0_external_connection_txd            (<connected-to-uart_0_external_connection_txd>)             //                                 .txd
 	);
 

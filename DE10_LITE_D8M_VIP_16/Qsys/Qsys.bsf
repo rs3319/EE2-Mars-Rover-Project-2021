@@ -4,26 +4,26 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 1991-2016 Altera Corporation. All rights reserved.
-Your use of Altera Corporation's design tools, logic functions 
+Copyright (C) 2016  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
 and other software and tools, and its AMPP partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
-to the terms and conditions of the Altera Program License 
-Subscription Agreement, the Altera Quartus Prime License Agreement,
-the Altera MegaCore Function License Agreement, or other 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel MegaCore Function License Agreement, or other 
 applicable license agreement, including, without limitation, 
 that your use is for the sole purpose of programming logic 
-devices manufactured by Altera and sold by Altera or its 
+devices manufactured by Intel and sold by Intel or its 
 authorized distributors.  Please refer to the applicable 
 agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 0 0 576 1072)
+	(rect 0 0 576 1128)
 	(text "Qsys" (rect 273 -1 295 11)(font "Arial" (font_size 10)))
-	(text "inst" (rect 8 1056 20 1068)(font "Arial" ))
+	(text "inst" (rect 8 1112 20 1124)(font "Arial" ))
 	(port
 		(pt 0 72)
 		(input)
@@ -107,6 +107,13 @@ agreement for further details.
 		(text "terasic_camera_0_conduit_end_PIXCLK" (rect 0 0 166 12)(font "Arial" (font_size 8)))
 		(text "terasic_camera_0_conduit_end_PIXCLK" (rect 4 1029 214 1040)(font "Arial" (font_size 8)))
 		(line (pt 0 1040)(pt 240 1040)(line_width 1))
+	)
+	(port
+		(pt 0 1080)
+		(input)
+		(text "uart_0_external_connection_rxd" (rect 0 0 128 12)(font "Arial" (font_size 8)))
+		(text "uart_0_external_connection_rxd" (rect 4 1069 184 1080)(font "Arial" (font_size 8)))
+		(line (pt 0 1080)(pt 240 1080)(line_width 1))
 	)
 	(port
 		(pt 0 88)
@@ -270,6 +277,13 @@ agreement for further details.
 		(line (pt 0 840)(pt 240 840)(line_width 1))
 	)
 	(port
+		(pt 0 1096)
+		(output)
+		(text "uart_0_external_connection_txd" (rect 0 0 127 12)(font "Arial" (font_size 8)))
+		(text "uart_0_external_connection_txd" (rect 4 1085 184 1096)(font "Arial" (font_size 8)))
+		(line (pt 0 1096)(pt 240 1096)(line_width 1))
+	)
+	(port
 		(pt 0 400)
 		(bidir)
 		(text "i2c_opencores_camera_export_scl_pad_io" (rect 0 0 173 12)(font "Arial" (font_size 8)))
@@ -380,11 +394,14 @@ agreement for further details.
 		(text "FVAL" (rect 245 1003 514 2016)(font "Arial" (color 0 0 0)))
 		(text "LVAL" (rect 245 1019 514 2048)(font "Arial" (color 0 0 0)))
 		(text "PIXCLK" (rect 245 1035 526 2080)(font "Arial" (color 0 0 0)))
-		(text " system " (rect 541 1056 1130 2122)(font "Arial" ))
+		(text "uart_0_external_connection" (rect 80 1051 316 2115)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "rxd" (rect 245 1075 508 2160)(font "Arial" (color 0 0 0)))
+		(text "txd" (rect 245 1091 508 2192)(font "Arial" (color 0 0 0)))
+		(text " Qsys " (rect 550 1112 1136 2234)(font "Arial" ))
 		(line (pt 240 32)(pt 336 32)(line_width 1))
-		(line (pt 336 32)(pt 336 1056)(line_width 1))
-		(line (pt 240 1056)(pt 336 1056)(line_width 1))
-		(line (pt 240 32)(pt 240 1056)(line_width 1))
+		(line (pt 336 32)(pt 336 1112)(line_width 1))
+		(line (pt 240 1112)(pt 336 1112)(line_width 1))
+		(line (pt 240 32)(pt 240 1112)(line_width 1))
 		(line (pt 241 52)(pt 241 204)(line_width 1))
 		(line (pt 242 52)(pt 242 204)(line_width 1))
 		(line (pt 241 220)(pt 241 244)(line_width 1))
@@ -423,9 +440,11 @@ agreement for further details.
 		(line (pt 242 900)(pt 242 956)(line_width 1))
 		(line (pt 241 972)(pt 241 1044)(line_width 1))
 		(line (pt 242 972)(pt 242 1044)(line_width 1))
+		(line (pt 241 1060)(pt 241 1100)(line_width 1))
+		(line (pt 242 1060)(pt 242 1100)(line_width 1))
 		(line (pt 0 0)(pt 576 0)(line_width 1))
-		(line (pt 576 0)(pt 576 1072)(line_width 1))
-		(line (pt 0 1072)(pt 576 1072)(line_width 1))
-		(line (pt 0 0)(pt 0 1072)(line_width 1))
+		(line (pt 576 0)(pt 576 1128)(line_width 1))
+		(line (pt 0 1128)(pt 576 1128)(line_width 1))
+		(line (pt 0 0)(pt 0 1128)(line_width 1))
 	)
 )

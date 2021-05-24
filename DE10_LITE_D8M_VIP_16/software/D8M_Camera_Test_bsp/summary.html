@@ -22,10 +22,10 @@
 <td width="20%" bgcolor="#77BBFF">BSP Version:</td><td>default</td>
 </tr>
 <tr mode="wrap">
-<td width="20%" bgcolor="#77BBFF">BSP Generated On:</td><td>22-May-2021 17:10:56</td>
+<td width="20%" bgcolor="#77BBFF">BSP Generated On:</td><td>24-May-2021 00:54:32</td>
 </tr>
 <tr mode="wrap">
-<td width="20%" bgcolor="#77BBFF">BSP Generated Timestamp:</td><td>1621671056347</td>
+<td width="20%" bgcolor="#77BBFF">BSP Generated Timestamp:</td><td>1621785272520</td>
 </tr>
 <tr mode="wrap">
 <td width="20%" bgcolor="#77BBFF">BSP Generated Location:</td><td>C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\software\D8M_Camera_Test_bsp</td>
@@ -36,6 +36,9 @@
 <table border="1" bgcolor="#FFFFCC" width="90%">
 <tr bgcolor="#77BBFF" mode="wrap">
 <th align="left" width="20%">Slave Descriptor</th><th align="left" width="40%">Address Range</th><th align="left" width="20%">Size</th><th align="left" width="20%">Attributes</th>
+</tr>
+<tr mode="wrap" STYLE="display: 'block'; font-family: 'courier'; color: '#000000'; font-weight: '500'; font-size: '14'; margin-top: '10pt'; text-align: 'left'">
+<td>uart_0</td><td>0x00042020 - 0x0004203F</td><td>32</td><td class="listing">printable</td>
 </tr>
 <tr mode="wrap" STYLE="display: 'block'; font-family: 'courier'; color: '#000000'; font-weight: '500'; font-size: '14'; margin-top: '10pt'; text-align: 'left'">
 <td>EEE_IMGPROC_0</td><td>0x00042000 - 0x0004201F</td><td>32</td><td class="listing">&nbsp;</td>
@@ -148,6 +151,60 @@
 </tr>
 <tr>
 <td width="20%">Identifier:</td><td>ALTERA_AVALON_JTAG_UART_SMALL</td>
+</tr>
+<tr>
+<td width="20%">Default Value:</td><td>false</td>
+</tr>
+<tr>
+<td width="20%">Value:</td><td>false</td>
+</tr>
+<tr>
+<td width="20%">Type:</td><td>BooleanDefineOnly</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Destination:</td><td>public_mk_define</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Description:</td><td>Small-footprint (polled mode) driver</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Restrictions:</td><td>none</td>
+</tr>
+</table>
+<br>
+<table border="1" bgcolor="#FFFFCC" width="60%">
+<tr bgcolor="#77BBFF">
+<td align="left" width="15%">Setting Name:</td><td align="left">altera_avalon_uart_driver.enable_ioctl</td>
+</tr>
+<tr>
+<td width="20%">Identifier:</td><td>ALTERA_AVALON_UART_USE_IOCTL</td>
+</tr>
+<tr>
+<td width="20%">Default Value:</td><td>false</td>
+</tr>
+<tr>
+<td width="20%">Value:</td><td>false</td>
+</tr>
+<tr>
+<td width="20%">Type:</td><td>BooleanDefineOnly</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Destination:</td><td>public_mk_define</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Description:</td><td>Enable driver ioctl() support. This feature is not compatible with the 'small' driver; ioctl() support will not be compiled if either the UART 'enable_small_driver' or HAL 'enable_reduced_device_drivers' settings are enabled.</td>
+</tr>
+<tr mode="wrap">
+<td width="20%">Restrictions:</td><td>none</td>
+</tr>
+</table>
+<br>
+<table border="1" bgcolor="#FFFFCC" width="60%">
+<tr bgcolor="#77BBFF">
+<td align="left" width="15%">Setting Name:</td><td align="left">altera_avalon_uart_driver.enable_small_driver</td>
+</tr>
+<tr>
+<td width="20%">Identifier:</td><td>ALTERA_AVALON_UART_SMALL</td>
 </tr>
 <tr>
 <td width="20%">Default Value:</td><td>false</td>
