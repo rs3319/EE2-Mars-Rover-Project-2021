@@ -99,6 +99,9 @@ void loop() {
 //Recieve Drive status (position)
 //Send drive position to vision
 //Recieve location of ping pong ball (if found on camera)
+if(Serial2.available()){
+  Serial.printf("Received: %s \n",Serial2.readStringUntil('\n'));
+}
 //Update array of ping pong ball locations
 
 
