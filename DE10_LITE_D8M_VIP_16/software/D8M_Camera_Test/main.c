@@ -128,12 +128,18 @@ int main()
             MIPI_BIN_LEVEL(bin_level); usleep(500000);
         }
 
-        // Read messages from the image processor and print them on the terminal
-        while ( (IORD(0x42000,EEE_IMGPROC_STATUS) >> 8) & 0xff ) { 	    // Find out if there are words to read
-            int word = IORD(0x42000,EEE_IMGPROC_MSG); 			        // Get next word from message buffer
-            if (word == EEE_IMGPROC_MSG_START) { printf("\n"); }        // Newline on message identifier
-            printf(" img_proc: %08x ",word);
+        FILE* fp;
+        fp = fopen ("/dev/uart_0", "r+"); //Open file for reading and writing
+        if (fp) {
+            // Read messages from the image processor and print them on the terminal
+            while ( (IORD(0x42000,EEE_IMGPROC_STATUS) >> 8) & 0xff ) {                     // Find out if there are words to read
+                int word = IORD(0x42000,EEE_IMGPROC_MSG); 			                       // Get next word from message buffer
+                if (word == EEE_IMGPROC_MSG_START) { printf("\n"); fprintf("\n"); }        // Newline on message identifier
+                printf("%08x\n",word); fprintf("%08x\n",word);
+            }
+            fclose(fp);
         }
+
 
         // Update the bounding box colour
         // boundingBoxColour = ((boundingBoxColour + 1) & 0xff);
