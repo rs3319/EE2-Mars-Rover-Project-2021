@@ -26,8 +26,8 @@ int DriveRX = 16;
 int DriveTX = 17;
 
 //Connect to internet
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "Sentil 2.4";
+const char *password = "alden2001";
 //AsyncWebServer server(81);
 
 
@@ -48,7 +48,7 @@ int ObjectY;
 const char* serverName = "http://esp32-mars-rover.000webhostapp.com/esp-log-data.php";
 String PostType = "";
 String apiKeyValue = "EXAMPLEKEY2000";
-const char* serverNameGET = "domain/esp-fetch-commands.php?apikey=&PostType=command";
+const char* serverNameGET = "http://esp32-mars-rover.000webhostapp.com/sql-query-latest.php?api_key=EXAMPLEKEY2000&database=commands";
 
 void setup() {
 Serial.begin(115200);
@@ -100,14 +100,14 @@ if(WiFi.status() == WL_CONNECTED){
   // add fields
   PostType = "Normal";
   String httpRequestDataNormal = "api_key=" + apiKeyValue + "&PostType=" + PostType + "&Energy=" + (String)EnergyStatus + "&Speed=" + (String)Speed + "&Yaw=" + (String)Yaw + "&PosX=" + (String)PositionX + "&PosY=" + (String)PositionY; 
-  Serial.print("HTTP Request: ");
-  Serial.println(httpRequestDataNormal);
+  //Serial.print("HTTP Request: ");
+  //Serial.println(httpRequestDataNormal);
   int httpResponseCode = http.POST(httpRequestDataNormal); 
    if(httpResponseCode>0){
-    Serial.print("httpResponseCode :");
-    Serial.println(httpResponseCode);
+    //Serial.print("httpResponseCode :");
+    //Serial.println(httpResponseCode);
     String Response = http.getString();
-    Serial.println(Response);
+    //Serial.println(Response);
 
   }else{
     Serial.print("HTTP ERROR Code: ");
@@ -120,14 +120,16 @@ if(WiFi.status() == WL_CONNECTED){
    */
    http.begin(serverNameGET);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  Serial.println("HTTP GET command");
+  //Serial.println("HTTP GET command");
   httpResponseCode = http.GET(); 
   String CurrentCommand = "";
   if(httpResponseCode>0){
-   Serial.print("httpResponseCode :");
-   Serial.println(httpResponseCode);
+   //Serial.print("httpResponseCode :");
+   //Serial.println(httpResponseCode);
    CurrentCommand = http.getString();
+   if(CurrentCommand != "nil"){
    Serial.println(CurrentCommand);
+   }
   }
   http.end();
 
