@@ -26,8 +26,8 @@ int DriveRX = 16;
 int DriveTX = 17;
 
 //Connect to internet
-const char *ssid = "Sentil 2.4";
-const char *password = "alden2001";
+const char *ssid = "";
+const char *password = "";
 //AsyncWebServer server(81);
 
 
