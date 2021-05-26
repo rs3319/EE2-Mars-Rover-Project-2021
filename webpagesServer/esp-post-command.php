@@ -1,4 +1,5 @@
 <?php
+$servername = "localhost";
 $dbname = "id16895048_esp32_readings";
 $username = "id16895048_esp32admin";
 $password = "-=guqufcaC00e(zM";
@@ -22,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
-
+        $conn->close();
 }
 }
 function test_input($data) {
