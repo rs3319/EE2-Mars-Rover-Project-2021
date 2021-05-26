@@ -55,7 +55,10 @@
           document.getElementById("turnleft").onclick = DriveLeft;
           document.getElementById("turnright").onclick = DriveRight;
           document.getElementById("backward").onclick = DriveReverse;
-
+          setInterval(function(){
+            $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "energy"},function(data,status){document.getElementById("energyvalue").innerHTML = data})
+          },1000)
+          
           function DriveLeft(){
             $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "tl", param1: 20, param2: 0});
           }
