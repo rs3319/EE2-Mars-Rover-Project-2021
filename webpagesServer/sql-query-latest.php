@@ -19,8 +19,20 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         $row = $result->fetch_assoc();
         echo $row["BatteryLevel"];
         }
+        else if (test_input($_GET["database"]) == "commands"){
+        $sql = "SELECT id,command,param1,param2 from ESP32Commands WHERE command_timestamp=(SELECT min(command_timestamp) FROM ESP32Commands)";
+        $result = $conn->query($sql);
+        if($result->num_rows > 0){
+        $row = $result->fetch_assoc();
+        echo $row["command"].",".$row["param1"].",".$row["param2"];   
+        $sql = "DELETE FROM ESP32Commands WHERE id=".$row["id"];
+        $conn->query($sql);
+        }else{
+        echo "nil";
+        } 
+        }
+        $conn->close();
     }
-    $conn->close();
 }
 function test_input($data) {
     $data = trim($data);
