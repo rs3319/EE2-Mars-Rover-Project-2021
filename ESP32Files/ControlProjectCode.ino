@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <Wire.h>
 #include <ESPAsyncWebServer.h>
+#include <HTTPClient.h>
 #include <SPIFFS.h>
 #include <String>
 #include <Wire.h>
@@ -23,15 +24,31 @@ int VisionRX = 19;
 int VisionTX = 18;
 int DriveRX = 16; 
 int DriveTX = 17;
-//Connect to internet and create webserver on port 80 
-const char *ssid = "";
-const char *password = "";
-AsyncWebServer server(80);
-//Params
+
+//Connect to internet
+const char *ssid = "Sentil 2.4";
+const char *password = "alden2001";
+//AsyncWebServer server(81);
+
+
+//Params (RAW)
 String EnergyStatus = "debug energy";
-String Speed = "debug speed";
-String Pos = "debug pos";
-String Yaw = "debug yaw";
+String VisionStatus;
+String DriveStatus;
+
+//Params (Decoded)
+int Speed;
+int PositionX;
+int PositionY;
+int Yaw;
+int ObjectX;
+int ObjectY;
+
+//HTTP Params
+const char* serverName = "http://esp32-mars-rover.000webhostapp.com/esp-log-data.php";
+String PostType = "";
+String apiKeyValue = "EXAMPLEKEY2000";
+const char* serverNameGET = "domain/esp-fetch-commands.php?apikey=&PostType=command";
 
 void setup() {
 Serial.begin(115200);
@@ -54,55 +71,66 @@ while(WiFi.status() != WL_CONNECTED){
   delay(1000);
 }
 Serial.println("Connected: "); Serial.print(WiFi.localIP());
-//Check for commands(HTTP server.on("/something, HTTP_GET)
-/* Commands: use server.on
- *  Get Rover position and ping pong ball position
- *  Movement (send commands to drive)
- *  Get Energy status 
- */
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    //Serial.print("Get Root!");
-    request->send(SPIFFS, "/index.html", String(), false);
-  });
-  server.on("/readings", HTTP_GET, [](AsyncWebServerRequest *request){
-
-    request->send(SPIFFS, "/readings.html", String(), false);
-  });
-  server.on("/readings.css", HTTP_GET, [](AsyncWebServerRequest *request){
-
-    request->send(SPIFFS, "/readings.css", String(), false);
-  });
-  server.on("/readings.js", HTTP_GET, [](AsyncWebServerRequest *request){
-   
-    request->send(SPIFFS, "/readings.js", String(), false);
-  });
-  server.on("/energy", HTTP_GET, [](AsyncWebServerRequest *request){
-    EnergyStatus = random(300);
-    request->send_P(200, "text/plain", EnergyStatus.c_str());
-  });
-  server.on("/speed", HTTP_GET , [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", Speed.c_str());
-  });
-  server.on("/position", HTTP_GET , [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", Pos.c_str());
-  });
-  server.on("/yaw", HTTP_GET , [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", Yaw.c_str());
-  });
-  server.begin();
 }
 
 
 void loop() {
 //Recieve Energy status
-
+EnergyStatus = random(300);
 //Recieve Drive status (position)
-//Send drive position to vision
-//Recieve location of ping pong ball (if found on camera)
-if(Serial2.available()){
-  Serial.printf("Received: %s \n",Serial2.readStringUntil('\n'));
+if(Serial1.available()){
+  DriveStatus = Serial1.readStringUntil('\n');
+  Serial.printf("Received: %s \n",DriveStatus);
+  //Send drive position to vision
 }
-//Update array of ping pong ball locations
 
 
+//Recieve location of ping pong ball (if found on camera) 
+if(Serial2.available()){
+  VisionStatus = Serial2.readStringUntil('\n');
+  Serial.printf("Received: %s \n",VisionStatus);
+}
+//Send ping pong ball location using PostType Object
+
+//POST data to command
+if(WiFi.status() == WL_CONNECTED){
+  HTTPClient http;
+  http.begin(serverName);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  // add fields
+  PostType = "Normal";
+  String httpRequestDataNormal = "api_key=" + apiKeyValue + "&PostType=" + PostType + "&Energy=" + (String)EnergyStatus + "&Speed=" + (String)Speed + "&Yaw=" + (String)Yaw + "&PosX=" + (String)PositionX + "&PosY=" + (String)PositionY; 
+  Serial.print("HTTP Request: ");
+  Serial.println(httpRequestDataNormal);
+  int httpResponseCode = http.POST(httpRequestDataNormal); 
+   if(httpResponseCode>0){
+    Serial.print("httpResponseCode :");
+    Serial.println(httpResponseCode);
+    String Response = http.getString();
+    Serial.println(Response);
+
+  }else{
+    Serial.print("HTTP ERROR Code: ");
+    Serial.print(httpResponseCode);
+  }
+  http.end();
+  //GET Commands from remote server
+  /* Backend contains database with list of commands, 
+   * sorts by oldest and sends to ESP32 and then deletes the oldest command 
+   */
+   http.begin(serverNameGET);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  Serial.println("HTTP GET command");
+  httpResponseCode = http.GET(); 
+  String CurrentCommand = "";
+  if(httpResponseCode>0){
+   Serial.print("httpResponseCode :");
+   Serial.println(httpResponseCode);
+   CurrentCommand = http.getString();
+   Serial.println(CurrentCommand);
+  }
+  http.end();
+
+}
+delay(1000);
 }
