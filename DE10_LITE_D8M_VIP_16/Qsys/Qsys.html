@@ -67,7 +67,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </table>
   <table class="blueBar">
    <tr>
-    <td class="l">2021.05.24.01:01:57</td>
+    <td class="l">2021.05.27.23:51:49</td>
     <td class="r">Datasheet</td>
    </tr>
   </table>
@@ -581,7 +581,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      </tr>
      <tr>
       <td class="neighbor" rowspan="2">
-       <a href="#module_alt_vip_vfb_0">alt_vip_vfb_0</a>
+       <a href="#module_alt_vip_cl_2dfir_0">alt_vip_cl_2dfir_0</a>
       </td>
       <td class="from">dout&#160;&#160;</td>
      </tr>
@@ -731,6 +731,240 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <tr>
         <td class="parametername">VIDEO_H</td>
         <td class="parametervalue">480</td>
+       </tr>
+       <tr>
+        <td class="parametername">deviceFamily</td>
+        <td class="parametervalue">UNKNOWN</td>
+       </tr>
+       <tr>
+        <td class="parametername">generateLegacySim</td>
+        <td class="parametervalue">false</td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>&#160;&#160;
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Software Assignments</h2>(none)</td>
+    </tr>
+   </table>
+  </div>
+  <a name="module_alt_vip_cl_2dfir_0"> </a>
+  <div>
+   <hr/>
+   <h2>alt_vip_cl_2dfir_0</h2>alt_vip_cl_2dfir v16.1
+   <br/>
+   <div class="greydiv">
+    <table class="connectionboxes">
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_alt_vip_vfb_0">alt_vip_vfb_0</a>
+      </td>
+      <td class="from">dout&#160;&#160;</td>
+      <td class="main" rowspan="10">alt_vip_cl_2dfir_0</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;din</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_altpll_0">altpll_0</a>
+      </td>
+      <td class="from">c2&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;main_clock</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_nios2_gen2">nios2_gen2</a>
+      </td>
+      <td class="from">debug_reset_request&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;main_reset</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">dout&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_TERASIC_AUTO_FOCUS_0">TERASIC_AUTO_FOCUS_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;din</td>
+     </tr>
+    </table>
+   </div>
+   <br/>
+   <br/>
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Parameters</h2>
+      <table>
+       <tr>
+        <td class="parametername">NUMBER_OF_COLOR_PLANES</td>
+        <td class="parametervalue">3</td>
+       </tr>
+       <tr>
+        <td class="parametername">COLOR_PLANES_ARE_IN_PARALLEL</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">PIXELS_IN_PARALLEL</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">BITS_PER_SYMBOL_IN</td>
+        <td class="parametervalue">8</td>
+       </tr>
+       <tr>
+        <td class="parametername">BITS_PER_SYMBOL_OUT</td>
+        <td class="parametervalue">8</td>
+       </tr>
+       <tr>
+        <td class="parametername">IS_422</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">ALGORITHM_NAME</td>
+        <td class="parametervalue">STANDARD_FIR</td>
+       </tr>
+       <tr>
+        <td class="parametername">V_TAPS</td>
+        <td class="parametervalue">3</td>
+       </tr>
+       <tr>
+        <td class="parametername">H_TAPS</td>
+        <td class="parametervalue">3</td>
+       </tr>
+       <tr>
+        <td class="parametername">V_SYMMETRIC</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">H_SYMMETRIC</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">DIAG_SYMMETRIC</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">COEFF_SIGNED</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">COEFF_INTEGER_BITS</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">COEFF_FRACTION_BITS</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">MOVE_BINARY_POINT_RIGHT</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">ROUNDING_METHOD</td>
+        <td class="parametervalue">ROUND_HALF_EVEN</td>
+       </tr>
+       <tr>
+        <td class="parametername">ENABLE_WIDE_BLUR_SHARPEN</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">DEFAULT_UPPER_BLUR</td>
+        <td class="parametervalue">15</td>
+       </tr>
+       <tr>
+        <td class="parametername">DEFAULT_LOWER_BLUR</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">DO_MIRRORING</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">RUNTIME_CONTROL</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">LIMITED_READBACK</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">USER_PACKET_SUPPORT</td>
+        <td class="parametervalue">PASSTHROUGH</td>
+       </tr>
+       <tr>
+        <td class="parametername">MAX_WIDTH</td>
+        <td class="parametervalue">640</td>
+       </tr>
+       <tr>
+        <td class="parametername">MAX_HEIGHT</td>
+        <td class="parametervalue">480</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUTPUT_GUARD_BANDS_ENABLE</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUTPUT_GUARD_BAND_LOWER</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUTPUT_GUARD_BAND_UPPER</td>
+        <td class="parametervalue">255</td>
+       </tr>
+       <tr>
+        <td class="parametername">INPUT_GUARD_BANDS_ENABLE</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">INPUT_GUARD_BAND_LOWER</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">INPUT_GUARD_BAND_UPPER</td>
+        <td class="parametervalue">255</td>
+       </tr>
+       <tr>
+        <td class="parametername">EXTRA_PIPELINING</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">NO_BLANKING</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">FIXED_COEFF_FILE</td>
+        <td class="parametervalue">C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\conv.csv</td>
+       </tr>
+       <tr>
+        <td class="parametername">FAMILY</td>
+        <td class="parametervalue">MAX10FPGA</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_DEVICE</td>
+        <td class="parametervalue">10M50DAF484C7G</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_DEVICE_SPEEDGRADE</td>
+        <td class="parametervalue">7</td>
        </tr>
        <tr>
         <td class="parametername">deviceFamily</td>
@@ -1052,7 +1286,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td class="from">dout&#160;&#160;</td>
       <td class="neighbor" rowspan="2">
-       <a href="#module_TERASIC_AUTO_FOCUS_0">TERASIC_AUTO_FOCUS_0</a>
+       <a href="#module_alt_vip_cl_2dfir_0">alt_vip_cl_2dfir_0</a>
       </td>
      </tr>
      <tr>
@@ -1148,7 +1382,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_nios2_gen2">nios2_gen2</a>
       </td>
       <td class="from">data_master&#160;&#160;</td>
-      <td class="main" rowspan="24">altpll_0</td>
+      <td class="main" rowspan="27">altpll_0</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;pll_slave</td>
@@ -1263,6 +1497,22 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;is_clk_rst</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">c2&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_alt_vip_cl_2dfir_0">alt_vip_cl_2dfir_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;main_clock</td>
      </tr>
     </table>
    </div>
@@ -3135,7 +3385,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_clk_50">clk_50</a>
       </td>
       <td class="from">clk&#160;&#160;</td>
-      <td class="main" rowspan="100">nios2_gen2</td>
+      <td class="main" rowspan="103">nios2_gen2</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;clk</td>
@@ -3614,6 +3864,22 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;is_clk_rst_reset</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">debug_reset_request&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_alt_vip_cl_2dfir_0">alt_vip_cl_2dfir_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;main_reset</td>
      </tr>
      <tr style="height:6px">
       <td></td>
@@ -5414,7 +5680,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">timestamp</td>
-        <td class="parametervalue">1621785716</td>
+        <td class="parametervalue">1622127109</td>
        </tr>
        <tr>
         <td class="parametername">deviceFamily</td>
@@ -5439,7 +5705,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">TIMESTAMP</td>
-        <td class="parametervalue">1621785716</td>
+        <td class="parametervalue">1622127109</td>
        </tr>
       </table>
      </td>
@@ -5828,7 +6094,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </div>
   <table class="blueBar">
    <tr>
-    <td class="l">generation took 0.01 seconds</td>
+    <td class="l">generation took 0.00 seconds</td>
     <td class="r">rendering took 0.10 seconds</td>
    </tr>
   </table>

@@ -26,7 +26,8 @@ module EEE_IMGPROC(
 	source_eop,
 	
 	// conduit
-	mode
+	mode,
+	filter
 );
 
 // global clock & reset
@@ -57,6 +58,7 @@ output	source_eop;
 
 // conduit export
 input	mode;
+input 	filter;
 
 parameter IMAGE_W = 11'd640;			// image width
 parameter IMAGE_H = 11'd480;			// image height
