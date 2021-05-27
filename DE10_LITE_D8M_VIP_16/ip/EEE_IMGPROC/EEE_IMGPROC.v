@@ -70,6 +70,20 @@ wire [7:0]   red, green, blue, grey;
 wire [7:0]   red_out, green_out, blue_out;
 wire         sop, eop, in_valid, out_ready;
 
+// RGB -> HSV colour space conversion
+// 8 bit HSV ranges as follows:
+// H: 0 ~ 180, S: 0 ~ 255, V: 0 ~ 255
+wire [7:0] cmax, cmin, delta, hue, saturation, value;
+assign cmax = ((red > green) & (red > blue)) ? red : ((green > blue) & (green > red)) ? green : blue;
+assign cmin = ((red < green) & (red < blue)) ? red : ((green < blue) & (green < red)) ? green : blue;
+assign delta = cmax-cmin;
+assign saturation = (cmax == 0) ? 0 : delta/cmax;
+assign hue = (delta == 0) ? 0 : (cmax == red) ? (green - blue)*60/saturation 
+							  : (cmax == green) ? 120 + (blue - red)*60/saturation
+		   					  : (cmax == blue) ? 240 + (red - green)*60/saturation;
+assign value = cmax;
+
+
 // Detect red, green, blue, yellow, pink and white areas
 wire red_detect, green_detect, blue_detect, white_detect, yellow_detect, pink_detect;
 assign red_detect = red[7] & ~green[7] & ~blue[7];
