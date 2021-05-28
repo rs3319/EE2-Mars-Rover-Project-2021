@@ -7,6 +7,7 @@
 #include <Wire.h>
 #include <Arduino.h>
 
+
 //Initialize pins for communucation with drive, vision and energy
 /*Pin Info:
  * IO16 - Arduino D9 Drive RX
@@ -77,6 +78,11 @@ Serial.println("Connected: "); Serial.print(WiFi.localIP());
 void loop() {
 //Recieve Energy status
 EnergyStatus = random(300);
+PositionX += 10;
+PositionY += 5;
+if(PositionY > 40){
+  PositionX -= 20;
+}
 //Recieve Drive status (position)
 if(Serial1.available()){
   DriveStatus = Serial1.readStringUntil('\n');
