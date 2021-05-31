@@ -132,14 +132,20 @@ int main()
         fp = fopen ("/dev/uart_0", "r+"); //Open file for reading and writing
         if (fp) {
             // Read messages from the image processor and print them on the terminal
-            while ( (IORD(0x42000,EEE_IMGPROC_STATUS) >> 8) & 0xff ) {                     // Find out if there are words to read
+            int count = 0;
+            while ( (IORD(0x42000,EEE_IMGPROC_STATUS) >> 8) & 0xff ) {
+                count++;
+                // Find out if there are words to read
                 int word = IORD(0x42000,EEE_IMGPROC_MSG); 			                       // Get next word from message buffer
-                if (word == EEE_IMGPROC_MSG_START) { printf("\n"); fprintf("\n"); }        // Newline on message identifier
-                printf("%08x\n",word); fprintf("%08x\n",word);
+                if (word == EEE_IMGPROC_MSG_START) { printf("\n"); fprintf(fp,"\n") }        // Newline on message identifier
+                printf("%08x\n",word); fprintf(fp, "%08x\n",word);
+                if (count%3 == 0) {
+                    printf("\n");
+                    fprintf(fp,"\n");
+                }
             }
             fclose(fp);
         }
-
 
         // Update the bounding box colour
         // boundingBoxColour = ((boundingBoxColour + 1) & 0xff);
