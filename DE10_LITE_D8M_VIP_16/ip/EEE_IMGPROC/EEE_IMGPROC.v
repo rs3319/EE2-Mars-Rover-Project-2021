@@ -145,7 +145,17 @@ reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b;
 reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p;
 always @(posedge clk) begin
-if (filter) begin
+	x_min_r <= 0;
+	x_max_r <= 0;
+	x_min_g <= 0;
+	x_max_g <= 0;
+	x_min_b <= 0;
+	x_max_b <= 0;
+	x_min_y <= 0;
+	x_max_y <= 0;
+	x_min_p <= 0;
+	x_max_p <= 0;
+	if (filter) begin
 		if (brightness_filter & red_detect & in_valid) begin	// Update bounds when the pixel is red
 			if (x < x_min_r) x_min_r <= x;
 			if (x > x_max_r) x_max_r <= x;
@@ -207,7 +217,6 @@ if (filter) begin
 			if (y < y_min_p) y_min_p <= y;
 			y_max_p <= y;
 		end
-	end
 	if (sop & in_valid) begin	// Reset bounds on start of packet
 		x_min_r <= IMAGE_W-11'h1; x_max_r <= 0;
 		y_min_r <= IMAGE_H-11'h1; y_max_r <= 0; // red
@@ -289,21 +298,21 @@ assign box_height_p = y_max_p - y_min_p;
 wire [7:0] dis_r, dis_g, dis_b, dis_y, dis_p; 	// 8 bits: max 256 cm away from rover's camera
 wire [9:0] focal_length; 						// all real life lengths in cm
 assign focal_length = 10'd800; 					// units: box width in pixels
-assign dis_r = 4 * focal_length / box_width_r + 24; 	// 4 cm ball diameter and 24 cm from camera to optical flow sensor
-assign dis_g = 4 * focal_length / box_width_g + 24;
-assign dis_b = 4 * focal_length / box_width_b + 24;
-assign dis_y = 4 * focal_length / box_width_y + 24;
-assign dis_p = 4 * focal_length / box_width_p + 24;
+assign dis_r = box_width_r ? 0 : 4 * focal_length / box_width_r + 24; 	// 4 cm ball diameter and 24 cm from camera to optical flow sensor
+assign dis_g = box_width_g ? 0 : 4 * focal_length / box_width_g + 24;
+assign dis_b = box_width_b ? 0 : 4 * focal_length / box_width_b + 24;
+assign dis_y = box_width_y ? 0 : 4 * focal_length / box_width_y + 24;
+assign dis_p = box_width_p ? 0 : 4 * focal_length / box_width_p + 24;
 
 // Compute angle from the centre of camera vision using perpendicular distance and number of pixels from the centre of camera (320,240)
 // Rather than computing the angle by arctan on verilog / hardware (not efficient use) -> let ESP32 do this
 // Find the number of pixels apart from the centre of vision to the balls
-wire signed [9:0] pixel_r, pixel_g, pixel_b, pixel_y, pixel_p;
-assign pixel_r = (x_min_r + box_width_r >> 2) - 320; // centre of ball pixel to the right of centre: +ve
-assign pixel_g = (x_min_r + box_width_g >> 2) - 320; // 					 to the  left of centre: -ve
-assign pixel_b = (x_min_r + box_width_b >> 2) - 320;
-assign pixel_y = (x_min_r + box_width_y >> 2) - 320;
-assign pixel_p = (x_min_r + box_width_p >> 2) - 320;
+wire [9:0] pixel_r, pixel_g, pixel_b, pixel_y, pixel_p;
+assign pixel_r = (x_min_r + box_width_r >> 2); // centre of ball pixel to the right of centre: > 320
+assign pixel_g = (x_min_r + box_width_g >> 2); // 							  left of centre:  < 320
+assign pixel_b = (x_min_r + box_width_b >> 2);
+assign pixel_y = (x_min_r + box_width_y >> 2);
+assign pixel_p = (x_min_r + box_width_p >> 2);
 
 // Generate output messages for CPU
 reg	[31:0]	msg_buf_in;
@@ -321,15 +330,15 @@ always @(*) begin	// Write words to FIFO as state machine advances
 			msg_buf_wr = 1'b0;				// nothing written in buffer
 		end
 		2'b01: begin
-			msg_buf_in = {dis_r,dis_g,dis_b,dis_y};	// distance to the balls r,g,b,y
+			msg_buf_in = {dis_r,dis_g,dis_b,dis_y};	// perpendicular distance to the balls r,g,b,y
 			msg_buf_wr = 1'b1;
 		end
 		2'b10: begin
-			msg_buf_in = {dis_p,2'd0,pixel_r,2'd0,pixel_g};	// distance to the ball p, pixel distance to the centre of r, g
+			msg_buf_in = {dis_p,4'hF,pixel_r,pixel_g};	// distance to the ball p, pixel distance to the centre of r, g
 			msg_buf_wr = 1'b1;
 		end
 		2'b11: begin
-			msg_buf_in = {pixel_b,1'd0,pixel_y,1'd0,pixel_p}; // pixel distance to the centre of b, y, p
+			msg_buf_in = {2'd0,pixel_b,pixel_y,pixel_p}; // pixel distance to the centre of b, y, p
 			msg_buf_wr = 1'b1;
 		end
 	endcase

@@ -406,7 +406,7 @@ agreement for further details.
 		(text "uart_0_external_connection" (rect 80 1091 316 2195)(font "Arial" (color 128 0 0)(font_size 9)))
 		(text "rxd" (rect 245 1115 508 2240)(font "Arial" (color 0 0 0)))
 		(text "txd" (rect 245 1131 508 2272)(font "Arial" (color 0 0 0)))
-		(text " system " (rect 541 1152 1130 2314)(font "Arial" ))
+		(text " Qsys " (rect 550 1152 1136 2314)(font "Arial" ))
 		(line (pt 240 32)(pt 336 32)(line_width 1))
 		(line (pt 336 32)(pt 336 1152)(line_width 1))
 		(line (pt 240 1152)(pt 336 1152)(line_width 1))
