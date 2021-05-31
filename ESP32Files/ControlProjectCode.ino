@@ -2,11 +2,9 @@
 #include <Wire.h>
 #include <ESPAsyncWebServer.h>
 #include <HTTPClient.h>
-#include <SPIFFS.h>
 #include <String>
-#include <Wire.h>
 #include <Arduino.h>
-
+#include <math.h>
 
 //Initialize pins for communucation with drive, vision and energy
 /*Pin Info:
@@ -16,7 +14,7 @@
  * 1018 - Arduino D6 Vision TX
  * IO21 - SDA Energy I2C Data
  * IO22 - SCL Energy 12C Clock
- * GND - GND
+ * GND - GNDM
  */
 
 int EnergySDA = 21;
@@ -39,24 +37,21 @@ String DriveStatus;
 
 //Params (Decoded)
 int Speed;
-int PositionX;
-int PositionY;
+int PositionX = 0;
+int PositionY = 0;
 int Yaw;
 int ObjectX;
 int ObjectY;
 
 //HTTP Params
 const char* serverName = "http://esp32-mars-rover.000webhostapp.com/esp-log-data.php";
+const char* PPScript = "http://esp32-mars-rover.000webhostapp.com/esp-log-PP.php";
 String PostType = "";
 String apiKeyValue = "EXAMPLEKEY2000";
 const char* serverNameGET = "http://esp32-mars-rover.000webhostapp.com/sql-query-latest.php?api_key=EXAMPLEKEY2000&database=commands";
 
 void setup() {
 Serial.begin(115200);
-if(!SPIFFS.begin(true)){
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
 //UART and I2C Pins
 Serial1.begin(115200,SERIAL_8N1,DriveRX,DriveTX);
 Serial2.begin(115200,SERIAL_8N1,VisionRX,VisionTX);
@@ -74,6 +69,82 @@ while(WiFi.status() != WL_CONNECTED){
 Serial.println("Connected: "); Serial.print(WiFi.localIP());
 }
 
+
+void processVision(int VisionStatus[3]){
+  int threshold = 0x8;
+  int rdist = VisionStatus[0] >> 24;
+  int gdist = ((VisionStatus[0] >> 16) & 0xFF);
+  int bdist = ((VisionStatus[0] >> 8) & 0xFF);
+  int ydist = VisionStatus[0] & 0xFF;
+  int pdist = VisionStatus[1] >> 24;
+  int rpix = (VisionStatus[1] >> 12) & 0x3FF;
+  int gpix = VisionStatus[1] & 0x3FF;
+  int bpix = VisionStatus[2] >> 22;
+  int ypix = VisionStatus[2] >> 11 & 0x3FF;
+  int ppix = VisionStatus[2] & 0x3FF;
+  int ppx,ppy; 
+  int perp,pix;
+  if(rdist > threshold){
+    // do dist and pix calculation to get ppx and ppy;
+    perp = rdist;
+    pix = rpix; 
+    HTTPClient http;
+    http.begin(PPScript);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String httpRequestDataPP = "api_key=" + apiKeyValue + "&Color=Red" + "&PosX=" + ppx + "&PosY=" + ppy;
+    int httpResponseCode = http.POST(httpRequestDataPP); 
+    if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
+    http.end();
+  }
+  if(gdist > threshold){
+    // do dist and pix calculation to get ppx and ppy;
+    perp = gdist;
+    pix = gpix;
+    HTTPClient http;
+    http.begin(PPScript);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String httpRequestDataPP = "api_key=" + apiKeyValue + "&Color=Green" + "&PosX=" + ppx + "&PosY=" + ppy;
+    int httpResponseCode = http.POST(httpRequestDataPP); 
+    if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
+    http.end();
+  }
+  if(bdist > threshold){
+    // do dist and pix calculation to get ppx and ppy;
+    perp = bdist;
+    pix = bpix;
+    HTTPClient http;
+    http.begin(PPScript);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String httpRequestDataPP = "api_key=" + apiKeyValue + "&Color=Blue" + "&PosX=" + ppx + "&PosY=" + ppy;
+    int httpResponseCode = http.POST(httpRequestDataPP); 
+    if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
+    http.end();
+  }
+  if(ydist > threshold){
+    // do dist and pix calculation to get ppx and ppy;
+    perp = ydist;
+    pix = ypix;
+    HTTPClient http;
+    http.begin(PPScript);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String httpRequestDataPP = "api_key=" + apiKeyValue + "&Color=Yellow" + "&PosX=" + ppx + "&PosY=" + ppy;
+    int httpResponseCode = http.POST(httpRequestDataPP); 
+    if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
+    http.end();
+  }
+  if(pdist > threshold){
+    // do dist and pix calculation to get ppx and ppy;
+    perp = pdist;
+    pix = ppix;
+    HTTPClient http;
+    http.begin(PPScript);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String httpRequestDataPP = "api_key=" + apiKeyValue + "&Color=Pink" + "&PosX=" + ppx + "&PosY=" + ppy;
+    int httpResponseCode = http.POST(httpRequestDataPP); 
+    if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
+    http.end();
+  } 
+}
 
 void loop() {
 //Recieve Energy status
