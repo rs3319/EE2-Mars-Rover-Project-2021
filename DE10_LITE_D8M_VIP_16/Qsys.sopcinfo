@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="Qsys" kind="Qsys" version="1.0" fabric="QSYS">
  <!-- Format version 16.1 196 (Future versions may contain additional information.) -->
- <!-- 2021.05.24.12:55:08 -->
+ <!-- 2021.05.31.18:03:57 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1621828507</value>
+  <value>1622451837</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -923,6 +923,51 @@ parameters are a RESULT of the module parameters. -->
    <isStart>false</isStart>
    <port>
     <name>mode</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>new_signal</role>
+   </port>
+  </interface>
+  <interface name="conduit_filter" kind="conduit_end" version="16.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value>clock</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="associatedReset">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>conduit</type>
+   <isStart>false</isStart>
+   <port>
+    <name>filter</name>
     <direction>Input</direction>
     <width>1</width>
     <role>new_signal</role>
@@ -2127,6 +2172,757 @@ parameters are a RESULT of the module parameters. -->
     <direction>Output</direction>
     <width>1</width>
     <role>valid</role>
+   </port>
+  </interface>
+ </module>
+ <module
+   name="alt_vip_cl_2dfir_0"
+   kind="alt_vip_cl_2dfir"
+   version="16.1"
+   path="alt_vip_cl_2dfir_0">
+  <!-- Describes a single module. Module parameters are
+the requested settings for a module instance. -->
+  <parameter name="NUMBER_OF_COLOR_PLANES">
+   <type>int</type>
+   <value>3</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="COLOR_PLANES_ARE_IN_PARALLEL">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="PIXELS_IN_PARALLEL">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="BITS_PER_SYMBOL_IN">
+   <type>int</type>
+   <value>8</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="BITS_PER_SYMBOL_OUT">
+   <type>int</type>
+   <value>8</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="IS_422">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="ALGORITHM_NAME">
+   <type>java.lang.String</type>
+   <value>STANDARD_FIR</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="V_TAPS">
+   <type>int</type>
+   <value>3</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="H_TAPS">
+   <type>int</type>
+   <value>3</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="V_SYMMETRIC">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="H_SYMMETRIC">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="DIAG_SYMMETRIC">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="COEFF_SIGNED">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="COEFF_INTEGER_BITS">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="COEFF_FRACTION_BITS">
+   <type>int</type>
+   <value>4</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="MOVE_BINARY_POINT_RIGHT">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="ROUNDING_METHOD">
+   <type>java.lang.String</type>
+   <value>ROUND_HALF_EVEN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="ENABLE_WIDE_BLUR_SHARPEN">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="DEFAULT_UPPER_BLUR">
+   <type>int</type>
+   <value>15</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="DEFAULT_LOWER_BLUR">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="DO_MIRRORING">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="RUNTIME_CONTROL">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="LIMITED_READBACK">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="USER_PACKET_SUPPORT">
+   <type>java.lang.String</type>
+   <value>PASSTHROUGH</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="MAX_WIDTH">
+   <type>int</type>
+   <value>640</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="MAX_HEIGHT">
+   <type>int</type>
+   <value>480</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="OUTPUT_GUARD_BANDS_ENABLE">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="OUTPUT_GUARD_BAND_LOWER">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="OUTPUT_GUARD_BAND_UPPER">
+   <type>int</type>
+   <value>255</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="INPUT_GUARD_BANDS_ENABLE">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="INPUT_GUARD_BAND_LOWER">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="INPUT_GUARD_BAND_UPPER">
+   <type>int</type>
+   <value>255</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="EXTRA_PIPELINING">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="NO_BLANKING">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="FIXED_COEFF_FILE">
+   <type>java.lang.String</type>
+   <value>C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\conv_gaussian_filter_3x3.csv</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="FAMILY">
+   <type>java.lang.String</type>
+   <value>MAX10FPGA</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+   <sysinfo_type>DEVICE_FAMILY</sysinfo_type>
+  </parameter>
+  <parameter name="AUTO_DEVICE">
+   <type>java.lang.String</type>
+   <value>10M50DAF484C7G</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+   <sysinfo_type>DEVICE</sysinfo_type>
+  </parameter>
+  <parameter name="AUTO_DEVICE_SPEEDGRADE">
+   <type>java.lang.String</type>
+   <value>7</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+   <sysinfo_type>DEVICE_SPEEDGRADE</sysinfo_type>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <interface name="main_clock" kind="clock_sink" version="16.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="externallyDriven">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="ptfSchematicName">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>clock</type>
+   <isStart>false</isStart>
+   <port>
+    <name>main_clock</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>clk</role>
+   </port>
+  </interface>
+  <interface name="main_reset" kind="reset_sink" version="16.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value>main_clock</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="synchronousEdges">
+    <type>com.altera.sopcmodel.reset.Reset$Edges</type>
+    <value>DEASSERT</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>reset</type>
+   <isStart>false</isStart>
+   <port>
+    <name>main_reset</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>reset</role>
+   </port>
+  </interface>
+  <interface name="din" kind="avalon_streaming_sink" version="16.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <assignment>
+    <name>alt_vip_av_st_video_format.COLOR_PLANES_ARE_IN_PARALLEL</name>
+    <value>1</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.NUMBER_OF_COLOR_PLANES</name>
+    <value>3</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.PIXELS_IN_PARALLEL</name>
+    <value>1</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.version</name>
+    <value>1.0</value>
+   </assignment>
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value>main_clock</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="associatedReset">
+    <type>java.lang.String</type>
+    <value>main_reset</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="beatsPerCycle">
+    <type>int</type>
+    <value>1</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="dataBitsPerSymbol">
+    <type>int</type>
+    <value>8</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="emptyWithinPacket">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="errorDescriptor">
+    <type>[Ljava.lang.String;</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="firstSymbolInHighOrderBits">
+    <type>boolean</type>
+    <value>true</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="highOrderSymbolAtMSB">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="maxChannel">
+    <type>int</type>
+    <value>0</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="packetDescription">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="readyLatency">
+    <type>int</type>
+    <value>1</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="symbolsPerBeat">
+    <type>int</type>
+    <value>3</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>avalon_streaming</type>
+   <isStart>false</isStart>
+   <port>
+    <name>din_data</name>
+    <direction>Input</direction>
+    <width>24</width>
+    <role>data</role>
+   </port>
+   <port>
+    <name>din_valid</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>valid</role>
+   </port>
+   <port>
+    <name>din_startofpacket</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>startofpacket</role>
+   </port>
+   <port>
+    <name>din_endofpacket</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>endofpacket</role>
+   </port>
+   <port>
+    <name>din_ready</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>ready</role>
+   </port>
+  </interface>
+  <interface name="dout" kind="avalon_streaming_source" version="16.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <assignment>
+    <name>alt_vip_av_st_video_format.COLOR_PLANES_ARE_IN_PARALLEL</name>
+    <value>1</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.NUMBER_OF_COLOR_PLANES</name>
+    <value>3</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.PIXELS_IN_PARALLEL</name>
+    <value>1</value>
+   </assignment>
+   <assignment>
+    <name>alt_vip_av_st_video_format.version</name>
+    <value>1.0</value>
+   </assignment>
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value>main_clock</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="associatedReset">
+    <type>java.lang.String</type>
+    <value>main_reset</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="beatsPerCycle">
+    <type>int</type>
+    <value>1</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="dataBitsPerSymbol">
+    <type>int</type>
+    <value>8</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="emptyWithinPacket">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="errorDescriptor">
+    <type>[Ljava.lang.String;</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="firstSymbolInHighOrderBits">
+    <type>boolean</type>
+    <value>true</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="highOrderSymbolAtMSB">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="maxChannel">
+    <type>int</type>
+    <value>0</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="packetDescription">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="readyLatency">
+    <type>int</type>
+    <value>1</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="symbolsPerBeat">
+    <type>int</type>
+    <value>3</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>avalon_streaming</type>
+   <isStart>true</isStart>
+   <port>
+    <name>dout_data</name>
+    <direction>Output</direction>
+    <width>24</width>
+    <role>data</role>
+   </port>
+   <port>
+    <name>dout_valid</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>valid</role>
+   </port>
+   <port>
+    <name>dout_startofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>startofpacket</role>
+   </port>
+   <port>
+    <name>dout_endofpacket</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>endofpacket</role>
+   </port>
+   <port>
+    <name>dout_ready</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>ready</role>
    </port>
   </interface>
  </module>
@@ -5928,6 +6724,12 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>alt_vip_itc_0</moduleName>
     <slaveName>is_clk_rst</slaveName>
     <name>alt_vip_itc_0.is_clk_rst</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>alt_vip_cl_2dfir_0</moduleName>
+    <slaveName>main_clock</slaveName>
+    <name>alt_vip_cl_2dfir_0.main_clock</name>
    </clockDomainMember>
   </interface>
   <interface name="c3" kind="clock_source" version="16.1">
@@ -17602,7 +18404,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1621828507</value>
+   <value>1622451837</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -17622,7 +18424,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1621828507</value>
+   <value>1622451837</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -17638,7 +18440,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1621828507</value>
+   <value>1622451837</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -20774,33 +21576,6 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>s1</endConnectionPoint>
  </connection>
  <connection
-   name="TERASIC_CAMERA_0.avalon_streaming_source/alt_vip_vfb_0.din"
-   kind="avalon_streaming"
-   version="16.1"
-   start="TERASIC_CAMERA_0.avalon_streaming_source"
-   end="alt_vip_vfb_0.din">
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>TERASIC_CAMERA_0</startModule>
-  <startConnectionPoint>avalon_streaming_source</startConnectionPoint>
-  <endModule>alt_vip_vfb_0</endModule>
-  <endConnectionPoint>din</endConnectionPoint>
- </connection>
- <connection
    name="EEE_IMGPROC_0.avalon_streaming_source/alt_vip_itc_0.din"
    kind="avalon_streaming"
    version="16.1"
@@ -20825,6 +21600,33 @@ parameters are a RESULT of the module parameters. -->
   <startModule>EEE_IMGPROC_0</startModule>
   <startConnectionPoint>avalon_streaming_source</startConnectionPoint>
   <endModule>alt_vip_itc_0</endModule>
+  <endConnectionPoint>din</endConnectionPoint>
+ </connection>
+ <connection
+   name="TERASIC_CAMERA_0.avalon_streaming_source/alt_vip_vfb_0.din"
+   kind="avalon_streaming"
+   version="16.1"
+   start="TERASIC_CAMERA_0.avalon_streaming_source"
+   end="alt_vip_vfb_0.din">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>TERASIC_CAMERA_0</startModule>
+  <startConnectionPoint>avalon_streaming_source</startConnectionPoint>
+  <endModule>alt_vip_vfb_0</endModule>
   <endConnectionPoint>din</endConnectionPoint>
  </connection>
  <connection
@@ -20855,11 +21657,38 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>avalon_streaming_sink</endConnectionPoint>
  </connection>
  <connection
-   name="alt_vip_vfb_0.dout/TERASIC_AUTO_FOCUS_0.din"
+   name="alt_vip_cl_2dfir_0.dout/TERASIC_AUTO_FOCUS_0.din"
+   kind="avalon_streaming"
+   version="16.1"
+   start="alt_vip_cl_2dfir_0.dout"
+   end="TERASIC_AUTO_FOCUS_0.din">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>alt_vip_cl_2dfir_0</startModule>
+  <startConnectionPoint>dout</startConnectionPoint>
+  <endModule>TERASIC_AUTO_FOCUS_0</endModule>
+  <endConnectionPoint>din</endConnectionPoint>
+ </connection>
+ <connection
+   name="alt_vip_vfb_0.dout/alt_vip_cl_2dfir_0.din"
    kind="avalon_streaming"
    version="16.1"
    start="alt_vip_vfb_0.dout"
-   end="TERASIC_AUTO_FOCUS_0.din">
+   end="alt_vip_cl_2dfir_0.din">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -20878,7 +21707,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <startModule>alt_vip_vfb_0</startModule>
   <startConnectionPoint>dout</startConnectionPoint>
-  <endModule>TERASIC_AUTO_FOCUS_0</endModule>
+  <endModule>alt_vip_cl_2dfir_0</endModule>
   <endConnectionPoint>din</endConnectionPoint>
  </connection>
  <connection
@@ -21042,6 +21871,33 @@ parameters are a RESULT of the module parameters. -->
   <startConnectionPoint>c2</startConnectionPoint>
   <endModule>alt_vip_itc_0</endModule>
   <endConnectionPoint>is_clk_rst</endConnectionPoint>
+ </connection>
+ <connection
+   name="altpll_0.c2/alt_vip_cl_2dfir_0.main_clock"
+   kind="clock"
+   version="16.1"
+   start="altpll_0.c2"
+   end="alt_vip_cl_2dfir_0.main_clock">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>altpll_0</startModule>
+  <startConnectionPoint>c2</startConnectionPoint>
+  <endModule>alt_vip_cl_2dfir_0</endModule>
+  <endConnectionPoint>main_clock</endConnectionPoint>
  </connection>
  <connection
    name="clk_50.clk/jtag_uart.clk"
@@ -22245,6 +23101,33 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>is_clk_rst_reset</endConnectionPoint>
  </connection>
  <connection
+   name="nios2_gen2.debug_reset_request/alt_vip_cl_2dfir_0.main_reset"
+   kind="reset"
+   version="16.1"
+   start="nios2_gen2.debug_reset_request"
+   end="alt_vip_cl_2dfir_0.main_reset">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>nios2_gen2</startModule>
+  <startConnectionPoint>debug_reset_request</startConnectionPoint>
+  <endModule>alt_vip_cl_2dfir_0</endModule>
+  <endConnectionPoint>main_reset</endConnectionPoint>
+ </connection>
+ <connection
    name="nios2_gen2.debug_reset_request/jtag_uart.reset"
    kind="reset"
    version="16.1"
@@ -22631,7 +23514,7 @@ parameters are a RESULT of the module parameters. -->
   <version>1.0</version>
  </plugin>
  <plugin>
-  <instanceCount>20</instanceCount>
+  <instanceCount>21</instanceCount>
   <name>clock_sink</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -22639,7 +23522,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>20</instanceCount>
+  <instanceCount>21</instanceCount>
   <name>reset_sink</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -22647,7 +23530,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>4</instanceCount>
+  <instanceCount>5</instanceCount>
   <name>avalon_streaming_sink</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -22655,7 +23538,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>4</instanceCount>
+  <instanceCount>5</instanceCount>
   <name>avalon_streaming_source</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -22671,7 +23554,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>15</instanceCount>
+  <instanceCount>16</instanceCount>
   <name>conduit_end</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -22693,6 +23576,14 @@ parameters are a RESULT of the module parameters. -->
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>TERASIC_CAMERA</displayName>
   <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>alt_vip_cl_2dfir</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>2D-FIR II (4K ready)</displayName>
+  <version>16.1</version>
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
@@ -22887,7 +23778,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>4</instanceCount>
+  <instanceCount>5</instanceCount>
   <name>avalon_streaming</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
@@ -22895,7 +23786,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>20</instanceCount>
+  <instanceCount>21</instanceCount>
   <name>clock</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
@@ -22911,7 +23802,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>38</instanceCount>
+  <instanceCount>39</instanceCount>
   <name>reset</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>

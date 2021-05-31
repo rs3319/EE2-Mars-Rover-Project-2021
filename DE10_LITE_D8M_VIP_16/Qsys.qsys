@@ -21,7 +21,7 @@
    {
       datum _originalDeviceFamily
       {
-         value = "Cyclone V";
+         value = "MAX 10";
          type = "String";
       }
    }
@@ -30,6 +30,54 @@
       datum _originalDeviceFamily
       {
          value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
          type = "String";
       }
    }
@@ -62,6 +110,14 @@
       datum _sortIndex
       {
          value = "13";
+         type = "int";
+      }
+   }
+   element alt_vip_cl_2dfir_0
+   {
+      datum _sortIndex
+      {
+         value = "21";
          type = "int";
       }
    }
@@ -389,6 +445,11 @@
  <interface name="clk_vga" internal="altpll_0.c3" type="clock" dir="start" />
  <interface name="d8m_xclkin" internal="altpll_0.c4" type="clock" dir="start" />
  <interface
+   name="eee_imgproc_0_conduit_filter"
+   internal="EEE_IMGPROC_0.conduit_filter"
+   type="conduit"
+   dir="end" />
+ <interface
    name="eee_imgproc_0_conduit_mode"
    internal="EEE_IMGPROC_0.conduit_mode"
    type="conduit"
@@ -461,6 +522,50 @@
    enabled="1">
   <parameter name="VIDEO_H" value="480" />
   <parameter name="VIDEO_W" value="640" />
+ </module>
+ <module
+   name="alt_vip_cl_2dfir_0"
+   kind="alt_vip_cl_2dfir"
+   version="16.1"
+   enabled="1">
+  <parameter name="ALGORITHM_NAME" value="STANDARD_FIR" />
+  <parameter name="AUTO_DEVICE" value="10M50DAF484C7G" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
+  <parameter name="BITS_PER_SYMBOL_IN" value="8" />
+  <parameter name="BITS_PER_SYMBOL_OUT" value="8" />
+  <parameter name="COEFF_FRACTION_BITS" value="4" />
+  <parameter name="COEFF_INTEGER_BITS" value="0" />
+  <parameter name="COEFF_SIGNED" value="0" />
+  <parameter name="COLOR_PLANES_ARE_IN_PARALLEL" value="1" />
+  <parameter name="DEFAULT_LOWER_BLUR" value="0" />
+  <parameter name="DEFAULT_UPPER_BLUR" value="15" />
+  <parameter name="DIAG_SYMMETRIC" value="0" />
+  <parameter name="DO_MIRRORING" value="0" />
+  <parameter name="ENABLE_WIDE_BLUR_SHARPEN" value="1" />
+  <parameter name="EXTRA_PIPELINING" value="0" />
+  <parameter name="FAMILY" value="MAX 10" />
+  <parameter name="FIXED_COEFF_FILE">C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\conv_gaussian_filter_3x3.csv</parameter>
+  <parameter name="H_SYMMETRIC" value="0" />
+  <parameter name="H_TAPS" value="3" />
+  <parameter name="INPUT_GUARD_BANDS_ENABLE" value="0" />
+  <parameter name="INPUT_GUARD_BAND_LOWER" value="0" />
+  <parameter name="INPUT_GUARD_BAND_UPPER" value="255" />
+  <parameter name="IS_422" value="0" />
+  <parameter name="LIMITED_READBACK" value="0" />
+  <parameter name="MAX_HEIGHT" value="480" />
+  <parameter name="MAX_WIDTH" value="640" />
+  <parameter name="MOVE_BINARY_POINT_RIGHT" value="0" />
+  <parameter name="NO_BLANKING" value="0" />
+  <parameter name="NUMBER_OF_COLOR_PLANES" value="3" />
+  <parameter name="OUTPUT_GUARD_BANDS_ENABLE" value="0" />
+  <parameter name="OUTPUT_GUARD_BAND_LOWER" value="0" />
+  <parameter name="OUTPUT_GUARD_BAND_UPPER" value="255" />
+  <parameter name="PIXELS_IN_PARALLEL" value="1" />
+  <parameter name="ROUNDING_METHOD" value="ROUND_HALF_EVEN" />
+  <parameter name="RUNTIME_CONTROL" value="0" />
+  <parameter name="USER_PACKET_SUPPORT" value="PASSTHROUGH" />
+  <parameter name="V_SYMMETRIC" value="0" />
+  <parameter name="V_TAPS" value="3" />
  </module>
  <module name="alt_vip_itc_0" kind="alt_vip_itc" version="14.0" enabled="1">
   <parameter name="ACCEPT_COLOURS_IN_SEQ" value="0" />
@@ -1248,13 +1353,13 @@
  <connection
    kind="avalon_streaming"
    version="16.1"
-   start="TERASIC_CAMERA_0.avalon_streaming_source"
-   end="alt_vip_vfb_0.din" />
+   start="EEE_IMGPROC_0.avalon_streaming_source"
+   end="alt_vip_itc_0.din" />
  <connection
    kind="avalon_streaming"
    version="16.1"
-   start="EEE_IMGPROC_0.avalon_streaming_source"
-   end="alt_vip_itc_0.din" />
+   start="TERASIC_CAMERA_0.avalon_streaming_source"
+   end="alt_vip_vfb_0.din" />
  <connection
    kind="avalon_streaming"
    version="16.1"
@@ -1263,8 +1368,13 @@
  <connection
    kind="avalon_streaming"
    version="16.1"
-   start="alt_vip_vfb_0.dout"
+   start="alt_vip_cl_2dfir_0.dout"
    end="TERASIC_AUTO_FOCUS_0.din" />
+ <connection
+   kind="avalon_streaming"
+   version="16.1"
+   start="alt_vip_vfb_0.dout"
+   end="alt_vip_cl_2dfir_0.din" />
  <connection kind="clock" version="16.1" start="altpll_0.c2" end="sdram.clk" />
  <connection
    kind="clock"
@@ -1291,6 +1401,11 @@
    version="16.1"
    start="altpll_0.c2"
    end="alt_vip_itc_0.is_clk_rst" />
+ <connection
+   kind="clock"
+   version="16.1"
+   start="altpll_0.c2"
+   end="alt_vip_cl_2dfir_0.main_clock" />
  <connection kind="clock" version="16.1" start="clk_50.clk" end="jtag_uart.clk" />
  <connection kind="clock" version="16.1" start="clk_50.clk" end="sysid_qsys.clk" />
  <connection kind="clock" version="16.1" start="clk_50.clk" end="timer.clk" />
@@ -1464,6 +1579,11 @@
    version="16.1"
    start="nios2_gen2.debug_reset_request"
    end="alt_vip_itc_0.is_clk_rst_reset" />
+ <connection
+   kind="reset"
+   version="16.1"
+   start="nios2_gen2.debug_reset_request"
+   end="alt_vip_cl_2dfir_0.main_reset" />
  <connection
    kind="reset"
    version="16.1"
