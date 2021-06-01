@@ -20,9 +20,10 @@
         <img id="stream" src="" class="rotate90">
       </div>
     </figure>
+
     <br>
     <br>
-            
+            <div id = "graph"></div>
             <section id="buttons">
 
                 <div id="controls" class="control-container">
@@ -31,42 +32,76 @@
                   <tr><td></td><td align="center"><button class="button button2" id="forward" >FORWARD</button></td><td></td></tr>
                   <tr><td align="center"><button class="button button2" id="turnleft" >LEFT</button></td><td align="center"></td><td align="center"><button class="button button2" id="turnright" >RIGHT</button></td></tr>
                   <tr><td></td><td align="center"><button class="button button2" id="backward" >REVERSE</button></td><td></td></tr>
-                  <tr><td></td><td align="center"><button class="button button4" id="Energy" onclick="fetch(document.location.origin+'/control?var=flash&val=1');">Get Energy</button></td><td></td></tr>
-                  <tr><td></td><td align="center"><button class="button button4" id="Position" onclick="fetch(document.location.origin+'/control?var=flashoff&val=0');">Get Position</button></td><td></td></tr>
+                
                   </table>
                 </div>
                <br>
-                <div id="sliders" class="slider-container">
-                  <table>
-                  <tr><td>Motor Speed:</td><td align="center" colspan="2"><input type="range" id="speed" min="0" max="255" value="200" onchange="try{fetch(document.location.origin+'/control?var=speed&val='+this.value);}catch(e){}"></td></tr>
-                  </table>
-                </div>
+               <p>
+                    Move to coordinate:
+                    <br>
+                    <br>
+                     <label for="spinnerX">X:</label>
+                     <input id="spinnerX" name="value" />
+                     <br>
+                     <br>
+                     <label for="spinnerY">Y:</label>
+                     <input id="spinnerY" name="value" />
+                     <br>
+                     <br>
+                     <button class ="button button2" id="ManualMove" >Move</button>
+                </p>
 
             </section> 
         <p>
           <i class="fas fa-lightbulb" style="color:#059e8a;"></i> 
           <span class="dht-labels">Energy</span> 
           <span id="energyvalue">%ENERGY%</span>
-        </p>        
+        </p>     
+        <p>
+          <i class="fas fa-map-marker-alt" style="color:#059e8a;"></i> 
+          <span class="dht-labels">Position</span> 
+          <span id="positionvalue">%POSITION%</span>
+        </p>  
+        <p>
+          <i class="fas fa-tachometer-alt" style="color:#059e8a;"></i> 
+          <span class="dht-labels">Speed</span> 
+          <span id="speedvalue">%SPEED%</span>
+        </p>  
+  
         </section>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
         <script>
+        $.ajax(
+           { 
+               url: 'sql-position-plot.php',
+               type: "POST",
+               success: function(data)
+               {
+                   $('#graph').append(data);
+               }
+           });
+          $( "#spinnerX" ).spinner();
+          $( "#spinnerY" ).spinner();
           document.getElementById("forward").onclick = DriveForward;
           document.getElementById("turnleft").onclick = DriveLeft;
           document.getElementById("turnright").onclick = DriveRight;
           document.getElementById("backward").onclick = DriveReverse;
+          document.getElementById("ManualMove").onclick = ManualMove;
           setInterval(function(){
             $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "energy"},function(data,status){document.getElementById("energyvalue").innerHTML = data})
+            $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "position"},function(data,status){document.getElementById("positionvalue").innerHTML = data})
+            $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "speed"},function(data,status){document.getElementById("speedvalue").innerHTML = data})
+            
           },1000)
-          
+
           function DriveLeft(){
             $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "tl", param1: 20, param2: 0});
           }
 
           function DriveForward(){
-            $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000", name : "fw", param1: 10, param2: 0},function(data, status){
-    alert("Data: " + data + "\nStatus: " + status);
-})
+            $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000", name : "fw", param1: 10, param2: 0});
           }
           function DriveRight(){
             $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "tr", param1: 20, param2: 0})
@@ -74,7 +109,11 @@
           function DriveReverse(){
             $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "rv", param1: 10, param2: 0})
           }
-          document.addEventListener('DOMContentLoaded',function(){function b(B){let C;switch(B.type){case'checkbox':C=B.checked?1:0;break;case'range':case'select-one':C=B.value;break;case'button':case'submit':C='1';break;default:return;}const D=`${c}/control?var=${B.id}&val=${C}`;fetch(D).then(E=>{console.log(`request to ${D} finished, status: ${E.status}`)})}var c=document.location.origin;const e=B=>{B.classList.add('hidden')},f=B=>{B.classList.remove('hidden')},g=B=>{B.classList.add('disabled'),B.disabled=!0},h=B=>{B.classList.remove('disabled'),B.disabled=!1},i=(B,C,D)=>{D=!(null!=D)||D;let E;'checkbox'===B.type?(E=B.checked,C=!!C,B.checked=C):(E=B.value,B.value=C),D&&E!==C?b(B):!D&&('aec'===B.id?C?e(v):f(v):'agc'===B.id?C?(f(t),e(s)):(e(t),f(s)):'awb_gain'===B.id?C?f(x):e(x):'face_recognize'===B.id&&(C?h(n):g(n)))};document.querySelectorAll('.close').forEach(B=>{B.onclick=()=>{e(B.parentNode)}}),fetch(`${c}/status`).then(function(B){return B.json()}).then(function(B){document.querySelectorAll('.default-action').forEach(C=>{i(C,B[C.id],!1)})});const j=document.getElementById('stream'),k=document.getElementById('stream-container'),l=document.getElementById('get-still'),m=document.getElementById('toggle-stream'),n=document.getElementById('face_enroll'),o=document.getElementById('close-stream'),p=()=>{window.stop(),m.innerHTML='Start'},q=()=>{j.src=`${c+':81'}/stream`,f(k),m.innerHTML='Stop'};l.onclick=()=>{p(),j.src=`${c}/capture?_cb=${Date.now()}`,f(k)},o.onclick=()=>{p(),e(k)},m.onclick=()=>{const B='Stop'===m.innerHTML;B?p():q()},n.onclick=()=>{b(n)},document.querySelectorAll('.default-action').forEach(B=>{B.onchange=()=>b(B)});const r=document.getElementById('agc'),s=document.getElementById('agc_gain-group'),t=document.getElementById('gainceiling-group');r.onchange=()=>{b(r),r.checked?(f(t),e(s)):(e(t),f(s))};const u=document.getElementById('aec'),v=document.getElementById('aec_value-group');u.onchange=()=>{b(u),u.checked?e(v):f(v)};const w=document.getElementById('awb_gain'),x=document.getElementById('wb_mode-group');w.onchange=()=>{b(w),w.checked?f(x):e(x)};const y=document.getElementById('face_detect'),z=document.getElementById('face_recognize'),A=document.getElementById('framesize');A.onchange=()=>{b(A),5<A.value&&(i(y,!1),i(z,!1))},y.onchange=()=>{return 5<A.value?(alert('Please select CIF or lower resolution before enabling this feature!'),void i(y,!1)):void(b(y),!y.checked&&(g(n),i(z,!1)))},z.onchange=()=>{return 5<A.value?(alert('Please select CIF or lower resolution before enabling this feature!'),void i(z,!1)):void(b(z),z.checked?(h(n),i(y,!0)):g(n))}});
+          function ManualMove(){
+ 
+            $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "mv", param1: document.getElementById("spinnerX").value, param2: document.getElementById("spinnerY").value }) 
+          }
+          
         </script>
     </body>
 </html>
