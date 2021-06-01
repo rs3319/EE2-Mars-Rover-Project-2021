@@ -37,6 +37,14 @@
    {
       datum _originalDeviceFamily
       {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
          value = "MAX 10";
          type = "String";
       }
@@ -78,14 +86,6 @@
       datum _originalDeviceFamily
       {
          value = "MAX 10";
-         type = "String";
-      }
-   }
-   element Qsys
-   {
-      datum _originalDeviceFamily
-      {
-         value = "Cyclone V";
          type = "String";
       }
    }
@@ -446,9 +446,7 @@
  <interface name="d8m_xclkin" internal="altpll_0.c4" type="clock" dir="start" />
  <interface
    name="eee_imgproc_0_conduit_filter"
-   internal="EEE_IMGPROC_0.conduit_filter"
-   type="conduit"
-   dir="end" />
+   internal="EEE_IMGPROC_0.conduit_filter" />
  <interface
    name="eee_imgproc_0_conduit_mode"
    internal="EEE_IMGPROC_0.conduit_mode"
@@ -544,7 +542,7 @@
   <parameter name="ENABLE_WIDE_BLUR_SHARPEN" value="1" />
   <parameter name="EXTRA_PIPELINING" value="0" />
   <parameter name="FAMILY" value="MAX 10" />
-  <parameter name="FIXED_COEFF_FILE">C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\conv_gaussian_filter_3x3.csv</parameter>
+  <parameter name="FIXED_COEFF_FILE">conv_gaussian_filter_3x3.csv</parameter>
   <parameter name="H_SYMMETRIC" value="0" />
   <parameter name="H_TAPS" value="3" />
   <parameter name="INPUT_GUARD_BANDS_ENABLE" value="0" />

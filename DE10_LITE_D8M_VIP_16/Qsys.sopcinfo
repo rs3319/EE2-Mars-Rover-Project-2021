@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="Qsys" kind="Qsys" version="1.0" fabric="QSYS">
  <!-- Format version 16.1 196 (Future versions may contain additional information.) -->
- <!-- 2021.05.31.18:03:57 -->
+ <!-- 2021.05.31.22:38:15 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1622451837</value>
+  <value>1622468295</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -923,51 +923,6 @@ parameters are a RESULT of the module parameters. -->
    <isStart>false</isStart>
    <port>
     <name>mode</name>
-    <direction>Input</direction>
-    <width>1</width>
-    <role>new_signal</role>
-   </port>
-  </interface>
-  <interface name="conduit_filter" kind="conduit_end" version="16.1">
-   <!-- The connection points exposed by a module instance for the
-particular module parameters. Connection points and their
-parameters are a RESULT of the module parameters. -->
-   <parameter name="associatedClock">
-    <type>java.lang.String</type>
-    <value>clock</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="associatedReset">
-    <type>java.lang.String</type>
-    <value></value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="deviceFamily">
-    <type>java.lang.String</type>
-    <value>UNKNOWN</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <parameter name="generateLegacySim">
-    <type>boolean</type>
-    <value>false</value>
-    <derived>false</derived>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <valid>true</valid>
-   </parameter>
-   <type>conduit</type>
-   <isStart>false</isStart>
-   <port>
-    <name>filter</name>
     <direction>Input</direction>
     <width>1</width>
     <role>new_signal</role>
@@ -2456,7 +2411,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="FIXED_COEFF_FILE">
    <type>java.lang.String</type>
-   <value>C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EEE2Rover\DE10_LITE_D8M_VIP_16\conv_gaussian_filter_3x3.csv</value>
+   <value>conv_gaussian_filter_3x3.csv</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -18404,7 +18359,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1622451837</value>
+   <value>1622468295</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -18424,7 +18379,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1622451837</value>
+   <value>1622468295</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -18440,7 +18395,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1622451837</value>
+   <value>1622468295</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -23554,7 +23509,7 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <plugin>
-  <instanceCount>16</instanceCount>
+  <instanceCount>15</instanceCount>
   <name>conduit_end</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>

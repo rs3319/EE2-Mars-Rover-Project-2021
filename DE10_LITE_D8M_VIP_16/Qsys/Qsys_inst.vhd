@@ -15,7 +15,6 @@
 			clk_sdram_clk                             : out   std_logic;                                        -- clk
 			clk_vga_clk                               : out   std_logic;                                        -- clk
 			d8m_xclkin_clk                            : out   std_logic;                                        -- clk
-			eee_imgproc_0_conduit_filter_new_signal   : in    std_logic                     := 'X';             -- new_signal
 			eee_imgproc_0_conduit_mode_new_signal     : in    std_logic                     := 'X';             -- new_signal
 			i2c_opencores_camera_export_scl_pad_io    : inout std_logic                     := 'X';             -- scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io    : inout std_logic                     := 'X';             -- sda_pad_io
@@ -65,7 +64,6 @@
 			clk_sdram_clk                             => CONNECTED_TO_clk_sdram_clk,                             --                        clk_sdram.clk
 			clk_vga_clk                               => CONNECTED_TO_clk_vga_clk,                               --                          clk_vga.clk
 			d8m_xclkin_clk                            => CONNECTED_TO_d8m_xclkin_clk,                            --                       d8m_xclkin.clk
-			eee_imgproc_0_conduit_filter_new_signal   => CONNECTED_TO_eee_imgproc_0_conduit_filter_new_signal,   --     eee_imgproc_0_conduit_filter.new_signal
 			eee_imgproc_0_conduit_mode_new_signal     => CONNECTED_TO_eee_imgproc_0_conduit_mode_new_signal,     --       eee_imgproc_0_conduit_mode.new_signal
 			i2c_opencores_camera_export_scl_pad_io    => CONNECTED_TO_i2c_opencores_camera_export_scl_pad_io,    --      i2c_opencores_camera_export.scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io    => CONNECTED_TO_i2c_opencores_camera_export_sda_pad_io,    --                                 .sda_pad_io
