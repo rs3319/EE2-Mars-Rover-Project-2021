@@ -1,6 +1,5 @@
 #include <WiFi.h>
 #include <Wire.h>
-#include <ESPAsyncWebServer.h>
 #include <HTTPClient.h>
 #include <String>
 #include <Arduino.h>
@@ -39,7 +38,7 @@ String DriveStatus;
 int Speed;
 int PositionX = 0;
 int PositionY = 0;
-int Yaw;
+int yaw;
 int ObjectX;
 int ObjectY;
 
@@ -53,7 +52,7 @@ const char* serverNameGET = "http://esp32-mars-rover.000webhostapp.com/sql-query
 void setup() {
 Serial.begin(115200);
 //UART and I2C Pins
-Serial1.begin(115200,SERIAL_8N1,DriveRX,DriveTX);
+Serial1.begin(9600,SERIAL_8N1,DriveRX,DriveTX);
 Serial2.begin(115200,SERIAL_8N1,VisionRX,VisionTX);
 Wire.begin(EnergySDA,EnergySCL);
 
@@ -72,6 +71,18 @@ Serial.println("Connected: "); Serial.print(WiFi.localIP());
 
 void processVision(int VisionStatus[3]){
   int threshold = 0x8;
+  
+  int rdist = 
+  int gdist = 
+  int bdist =
+  int ydist = 
+  int pdist = 
+  int rpix = 
+  int gpix = 
+  int bpix = 
+  int ypix =
+  int ppix = 
+  /*
   int rdist = VisionStatus[0] >> 24;
   int gdist = ((VisionStatus[0] >> 16) & 0xFF);
   int bdist = ((VisionStatus[0] >> 8) & 0xFF);
@@ -82,12 +93,20 @@ void processVision(int VisionStatus[3]){
   int bpix = VisionStatus[2] >> 22;
   int ypix = VisionStatus[2] >> 11 & 0x3FF;
   int ppix = VisionStatus[2] & 0x3FF;
+  */
   int ppx,ppy; 
-  int perp,pix;
+  float perp,pix,theta,psi,dx,dy,r;
   if(rdist > threshold){
     // do dist and pix calculation to get ppx and ppy;
     perp = rdist;
     pix = rpix; 
+    dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
+    dy = perp;
+    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw;
+    r = sqrt(pow(dx,2)+pow(dy,2));
+    ppx = PositionX + r*sin(psi);
+    ppy = PositionY + r*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -100,6 +119,13 @@ void processVision(int VisionStatus[3]){
     // do dist and pix calculation to get ppx and ppy;
     perp = gdist;
     pix = gpix;
+    dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
+    dy = perp;
+    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw;
+    r = sqrt(pow(dx,2)+pow(dy,2));
+    ppx = PositionX + r*sin(psi);
+    ppy = PositionY + r*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -112,6 +138,13 @@ void processVision(int VisionStatus[3]){
     // do dist and pix calculation to get ppx and ppy;
     perp = bdist;
     pix = bpix;
+    dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
+    dy = perp;
+    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw;
+    r = sqrt(pow(dx,2)+pow(dy,2));
+    ppx = PositionX + r*sin(psi);
+    ppy = PositionY + r*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -124,6 +157,13 @@ void processVision(int VisionStatus[3]){
     // do dist and pix calculation to get ppx and ppy;
     perp = ydist;
     pix = ypix;
+    dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
+    dy = perp;
+    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw;
+    r = sqrt(pow(dx,2)+pow(dy,2));
+    ppx = PositionX + r*sin(psi);
+    ppy = PositionY + r*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -136,6 +176,13 @@ void processVision(int VisionStatus[3]){
     // do dist and pix calculation to get ppx and ppy;
     perp = pdist;
     pix = ppix;
+    dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
+    dy = perp;
+    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw;
+    r = sqrt(pow(dx,2)+pow(dy,2));
+    ppx = PositionX + r*sin(psi);
+    ppy = PositionY + r*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -149,11 +196,13 @@ void processVision(int VisionStatus[3]){
 void loop() {
 //Recieve Energy status
 EnergyStatus = random(300);
+/*
 PositionX += 10;
 PositionY += 5;
 if(PositionY > 40){
   PositionX -= 20;
 }
+*/
 //Recieve Drive status (position)
 if(Serial1.available()){
   DriveStatus = Serial1.readStringUntil('\n');
@@ -168,6 +217,14 @@ if(Serial2.available()){
   Serial.printf("Received: %s \n",VisionStatus);
 }
 //Send ping pong ball location using PostType Object
+if(WiFi.status() == WL_CONNECTED){
+  int Dummy[3];
+  Dummy[0] = random(pow(2,32));
+  Dummy[1] = random(pow(2,32));
+  Dummy[2] = random(pow(2,32)); 
+  processVision(Dummy);
+  }
+  
 
 //POST data to command
 if(WiFi.status() == WL_CONNECTED){
@@ -176,7 +233,7 @@ if(WiFi.status() == WL_CONNECTED){
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   // add fields
   PostType = "Normal";
-  String httpRequestDataNormal = "api_key=" + apiKeyValue + "&PostType=" + PostType + "&Energy=" + (String)EnergyStatus + "&Speed=" + (String)Speed + "&Yaw=" + (String)Yaw + "&PosX=" + (String)PositionX + "&PosY=" + (String)PositionY; 
+  String httpRequestDataNormal = "api_key=" + apiKeyValue + "&PostType=" + PostType + "&Energy=" + (String)EnergyStatus + "&Speed=" + (String)Speed + "&Yaw=" + (String)yaw + "&PosX=" + (String)PositionX + "&PosY=" + (String)PositionY; 
   //Serial.print("HTTP Request: ");
   //Serial.println(httpRequestDataNormal);
   int httpResponseCode = http.POST(httpRequestDataNormal); 
