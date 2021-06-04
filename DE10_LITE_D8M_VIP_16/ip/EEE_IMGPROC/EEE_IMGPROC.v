@@ -223,107 +223,87 @@ always@(posedge clk) begin
 	if (eop & in_valid & packet_video) begin  // Ignore non-video packets
 		// Latch edges for display overlay on next frame
 		// red
-		if (x_min_r_prev != 0) left_r <= x_min_r_prev;
-		if (x_max_r_prev != 0) right_r <= x_max_r_prev;
-		if (y_min_r != 0) top_r <= y_min_r;
-		if (y_min_r != 0) bottom_r <= y_max_r;
+		left_r <= x_min_r_prev;
+		right_r <= x_max_r_prev;
+		top_r <= y_min_r;
+		bottom_r <= y_max_r;
 		// green
-		if (x_min_g_prev_pp != 0) left_g <= x_min_g_prev_pp;
-		if (x_max_g_prev_pp != 0) right_g <= x_max_g_prev_pp;
-		if (y_min_g != 0)  top_g <= y_min_g;
-		if (y_min_g != 0)  bottom_g <= y_max_g;
+		left_g <= x_min_g_prev_pp;
+		right_g <= x_max_g_prev_pp;
+		top_g <= y_min_g;
+		bottom_g <= y_max_g;
 		// blue
-		if (x_min_b_prev_pp != 0) left_b <= x_min_b_prev_pp;
-		if (x_max_b_prev_pp != 0) right_b <= x_max_b_prev_pp;
-		if (y_min_b != 0) top_b <= y_min_b;
-		if (y_min_b != 0) bottom_b <= y_max_b;
+		left_b <= x_min_b_prev_pp;
+		right_b <= x_max_b_prev_pp;
+		top_b <= y_min_b;
+		bottom_b <= y_max_b;
 		// yellow
-		if (x_min_y_prev != 0) left_y <= x_min_y_prev;
-		if (x_max_y_prev != 0) right_y <= x_max_y_prev;
-		if (y_min_y != 0) top_y <= y_min_y;
-		if (y_min_y != 0) bottom_y <= y_max_y;
+		left_y <= x_min_y_prev;
+		right_y <= x_max_y_prev;
+		top_y <= y_min_y;
+		bottom_y <= y_max_y;
 		// pink
-		if (x_min_p_prev != 0) left_p <= x_min_p_prev;
-		if (x_max_p_prev != 0) right_p <= x_max_p_prev;
-		if (y_min_p != 0) top_p <= y_min_p;
-		if (y_min_p != 0) bottom_p <= y_max_p;
+		left_p <= x_min_p_prev;
+		right_p <= x_max_p_prev;
+		top_p <= y_min_p;
+		bottom_p <= y_max_p;
 
 		// Start message writer FSM once every MSG_INTERVAL frames, if there is room in the FIFO
 		frame_count <= frame_count - 1;
 		
 		if (frame_count == 0 && msg_buf_size < MESSAGE_BUF_MAX - 3) begin
-			msg_state <= 2'b01;
+			msg_state <= 3'b001;
 			frame_count <= MSG_INTERVAL-1;
 		end
 	end
 	// Cycle through message writer states once started
-	if (msg_state != 2'b00) msg_state <= msg_state + 2'b01;
+	if (msg_state != 3'b000) msg_state <= msg_state + 3'b001;
 end
 	
-
-// Compute size of the balls
-wire [9:0] box_width_r, box_width_g, box_width_b, box_width_y, box_width_p; // max 640 < 1024 = 2^10
-wire [8:0] box_height_r, box_height_g, box_height_b, box_height_y, box_height_p;
-assign box_width_r = x_max_r - x_min_r;
-assign box_width_g = x_max_g - x_min_g;
-assign box_width_b = x_max_b - x_min_b;
-assign box_width_y = x_max_y - x_min_y;
-assign box_width_p = x_max_p - x_min_p;
-assign box_height_r = y_max_r - y_min_r;
-assign box_height_g = y_max_g - y_min_g;
-assign box_height_b = y_max_b - y_min_b;
-assign box_height_y = y_max_y - y_min_y;
-assign box_height_p = y_max_p - y_min_p;
-
-// Compute the perpendicular distance from the camera to the balls (+ distance from camera to the optical sensor displacement readings)
-wire [7:0] dis_r, dis_g, dis_b, dis_y, dis_p; 	// 8 bits: max 256 cm away from rover's camera
-wire [9:0] focal_length; 						// all real life lengths in cm
-assign focal_length = 10'd800; 					// units: box width in pixels
-assign dis_r = box_width_r ? 4 * focal_length / box_width_r : 8'h0; 	// 4 cm ball diameter and 24 cm from camera to optical flow sensor
-assign dis_g = box_width_g ? 4 * focal_length / box_width_g : 8'h0;
-assign dis_b = box_width_b ? 4 * focal_length / box_width_b : 8'h0;
-assign dis_y = box_width_y ? 4 * focal_length / box_width_y : 8'h0;
-assign dis_p = box_width_p ? 4 * focal_length / box_width_p : 8'h0;
-
-// Compute angle from the centre of camera vision using perpendicular distance and number of pixels from the centre of camera (320,240)
-// Rather than computing the angle by arctan on verilog / hardware (not efficient use) -> let ESP32 do this
-// Find the number of pixels apart from the centre of vision to the balls
-wire [9:0] pixel_r, pixel_g, pixel_b, pixel_y, pixel_p;
-assign pixel_r = box_width_r ? (x_min_r + box_width_r/2) : 8'h0; // centre of ball pixel to the right of centre: +ve
-assign pixel_g = box_width_g ? (x_min_g + box_width_g/2) : 8'h0; // 					 to the  left of centre: -ve
-assign pixel_b = box_width_b ? (x_min_b + box_width_b/2) : 8'h0;
-assign pixel_y = box_width_y ? (x_min_y + box_width_y/2) : 8'h0;
-assign pixel_p = box_width_p ? (x_min_p + box_width_p/2) : 8'h0;
-
 // Generate output messages for CPU
-reg	[31:0]	msg_buf_in;
+reg	[94:0]	msg_buf_in; // this
 reg msg_buf_wr;
-wire [31:0] msg_buf_out;
+wire [94:0] msg_buf_out; // this
 wire msg_buf_rd, msg_buf_flush, msg_buf_empty;
 wire [7:0] msg_buf_size;
 
 `define RED_BOX_MSG_ID "RBB" // -> #define EEE_IMGPROC_MSG_START ('R'<<16 | 'B'<<8 | 'B') in main.c
-
-// Message content: 
-// In order to filter out faulty boxes, we need to send over the exact info about the boxes: box width and box height or the top left and bottom right coordinates
-// Compute the perpendicular distances on ESP32? 
-// Filter by area of box (too small), ratio of height to width (accept near 1:1 ratio boxes), 
+// 1024 > 640 , 512 > 480 -> 38 bits * 5 = 190; 95 = 38 + 38 + 10 + 9
+// 10 + 9 + 10, 9 + 10 + 9
+// x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0],y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0],x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0],y_min_b[8:0]
+// x_max_b_prev_p[9:0],y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0],x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0],y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]
 always @(*) begin	// Write words to FIFO as state machine advances
 	case(msg_state)
-		2'b00: begin
+		3'b000: begin
 			msg_buf_in = 32'b0;
 			msg_buf_wr = 1'b0;				// nothing written in buffer
 		end
-		2'b01: begin
-			msg_buf_in = {dis_r,dis_g,dis_b,dis_y};	// perpendicular distance to the balls r,g,b,y
+		3'b001: begin
+			msg_buf_in = `RED_BOX_MSG_ID;
 			msg_buf_wr = 1'b1;
 		end
-		2'b10: begin
-			msg_buf_in = {dis_p,4'hF,pixel_r,pixel_g};	// distance to the ball p, pixel distance to the centre of r, g
+		3'b010: begin
+			msg_buf_in = {3'h0,x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0]};
 			msg_buf_wr = 1'b1;
 		end
-		2'b11: begin
-			msg_buf_in = {2'd0,pixel_b,pixel_y,pixel_p}; // pixel distance to the centre of b, y, p
+		3'b011: begin
+			msg_buf_in = {4'h0,y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]};
+			msg_buf_wr = 1'b1;
+		end
+		3'b100: begin
+			msg_buf_in = {3'h0,x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0]};
+			msg_buf_wr = 1'b1;
+		end
+		3'b101: begin
+			msg_buf_in = {4'h0,y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0]};
+			msg_buf_wr = 1'b1;
+		end
+		3'b110: begin
+			msg_buf_in = {3'h0,x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0]}; 
+			msg_buf_wr = 1'b1;
+		end
+		3'b111: begin
+			msg_buf_in = {4'h0,y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]};
 			msg_buf_wr = 1'b1;
 		end
 	endcase
@@ -333,11 +313,11 @@ end
 //Output message FIFO
 MSG_FIFO MSG_FIFO_inst (
 	.clock (clk),
-	.data (msg_buf_in),
+	.data (msg_buf_in), // this
 	.rdreq (msg_buf_rd),
 	.sclr (~reset_n | msg_buf_flush),
 	.wrreq (msg_buf_wr),
-	.q (msg_buf_out),
+	.q (msg_buf_out), // this
 	.usedw (msg_buf_size),
 	.empty (msg_buf_empty)
 );
