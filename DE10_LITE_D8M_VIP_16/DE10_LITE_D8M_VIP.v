@@ -176,10 +176,11 @@ Qsys u0 (
 		.altpll_0_locked_conduit_export            (),            						//          altpll_0_locked_conduit.export
 		.altpll_0_phasedone_conduit_export         (),         							//       altpll_0_phasedone_conduit.export		
 		
-		.uart_0_external_connection_rxd				 (ARDUINO_IO[5]),
-		.uart_0_external_connection_txd				 (ARDUINO_IO[6]),
+		.uart_0_external_connection_rxd				 (ARDUINO_IO[6]),		// transmitted by arduino
+		.uart_0_external_connection_txd				 (ARDUINO_IO[5]),		// received by arduino
 		
-		.eee_imgproc_0_conduit_mode_new_signal     (SW[0])
+		.eee_imgproc_0_conduit_mode_new_signal     (SW[0]),
+		.eee_imgproc_0_conduit_filter_new_signal 	 (SW[1])
 	);
 
 FpsMonitor uFps(
