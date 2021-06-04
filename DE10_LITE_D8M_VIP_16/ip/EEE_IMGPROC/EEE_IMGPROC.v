@@ -89,11 +89,11 @@ assign value = cmax;
 // Detect red, green, blue, yellow, pink and white areas
 // https://alloyui.com/examples/color-picker/hsv.html
 wire red_detect, green_detect, blue_detect, white_detect, yellow_detect, pink_detect, black_detect;
-assign red_detect 	 = hue <= 15  & hue >= 5   & saturation <= 235 & saturation >= 175 & value >= 150 & value <= 220 & red[7] & ~green[7] & ~blue[7];
-assign green_detect  = hue <= 170 & hue >= 160 & saturation <= 230 & saturation >= 165 & value <= 155 & value >= 60 & !red[7];
-assign blue_detect   = hue <= 215 & hue >= 205 & saturation <= 220 & saturation >= 130 & value <= 125 & value >= 45 & !red[7];
-assign yellow_detect = hue <= 100 & hue >= 80 & saturation <= 140 & saturation >= 85 & value >= 150 & value <= 180 & red[7] & green[7] & !blue[7];
-assign pink_detect 	 = hue <= 30 & hue >= 7 & saturation <= 70 & saturation >= 30 & value >= 160 & value <= 180;
+assign red_detect 	 = hue <= 15  & hue >= 5   & saturation <= 235 & saturation >= 175 & value >= 150 & value <= 220 & red[7] & ~green[7] & ~blue[7]; // well detected, with some noise from blue
+assign green_detect  = hue <= 170 & hue >= 160 & saturation <= 230 & saturation >= 165 & value <= 155 & value >= 60 & !red[7]; // lots of green noise from dark area (180~100)
+assign blue_detect   = hue <= 215 & hue >= 205 & saturation <= 220 & saturation >= 130 & value <= 125 & value >= 45 & !red[7]; // blue not found, detected as green
+assign yellow_detect = hue <= 100 & hue >= 80 & saturation <= 140 & saturation >= 85 & value >= 150 & value <= 180 & red[7] & green[7] & !blue[7]; // yellow falsely detected at some bright areas
+assign pink_detect 	 = hue <= 30 & hue >= 7 & saturation <= 70 & saturation >= 30 & value >= 160 & value <= 180; // pink rarely detected
 assign white_detect  = red[7] & red[6] & green[7] & green[6] & blue[7] & blue[6];
 assign black_detect  = !((red[7:3] == 5'h0) & (green[7:3] == 5'h0) & (blue[7:3] == 5'h0)); 
 
@@ -147,8 +147,8 @@ end
 
 // Find first and last r,g,b,y,p pixels
 reg [10:0] x_min_r, y_min_r, x_max_r, y_max_r, x_min_r_prev, x_max_r_prev;
-reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p;
-reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p;
+reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp;
+reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p, x_min_b_prev_pp, x_max_b_prev_pp;
 reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y, x_min_y_prev, x_max_y_prev;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p, x_min_p_prev, x_max_p_prev;
 always @(posedge clk) begin
@@ -159,14 +159,14 @@ always @(posedge clk) begin
 		if (y > y_max_r) y_max_r <= y;
 	end
 	if (green_detect & in_valid) begin	// green
-		if (x < x_min_g) x_min_g <= x; if (x < x_min_g_prev & x > x_min_g) x_min_g_prev <= x; if (x < x_min_g_prev_p & x > x_min_g_prev) x_min_g_prev_p <= x;
-		if (x > x_max_g) x_max_g <= x; if (x > x_max_g_prev & x < x_max_g) x_max_g_prev <= x; if (x > x_max_g_prev_p & x < x_max_g_prev) x_max_g_prev_p <= x;
+		if (x < x_min_g) x_min_g <= x; if (x < x_min_g_prev & x > x_min_g) x_min_g_prev <= x; if (x < x_min_g_prev_p & x > x_min_g_prev) x_min_g_prev_p <= x; if (x < x_min_g_prev_pp & x > x_min_g_prev_p) x_min_g_prev_pp <= x;
+		if (x > x_max_g) x_max_g <= x; if (x > x_max_g_prev & x < x_max_g) x_max_g_prev <= x; if (x > x_max_g_prev_p & x < x_max_g_prev) x_max_g_prev_p <= x; if (x > x_max_g_prev_pp & x < x_max_g_prev_p) x_max_g_prev_pp <= x;
 		if (y < y_min_g) y_min_g <= y; 
 		if (y > y_max_g) y_max_g <= y; 
 	end
 	if (blue_detect & in_valid) begin	// blue
-		if (x < x_min_b) x_min_b <= x; if (x < x_min_b_prev & x > x_min_b) x_min_b_prev <= x; if (x < x_min_b_prev_p & x > x_min_b_prev) x_min_b_prev_p <= x;
-		if (x > x_max_b) x_max_b <= x; if (x > x_max_b_prev & x < x_max_b) x_max_b_prev <= x; if (x > x_max_b_prev_p & x < x_max_b_prev) x_max_b_prev_p <= x;
+		if (x < x_min_b) x_min_b <= x; if (x < x_min_b_prev & x > x_min_b) x_min_b_prev <= x; if (x < x_min_b_prev_p & x > x_min_b_prev) x_min_b_prev_p <= x; if (x < x_min_b_prev_pp & x > x_min_b_prev_p) x_min_b_prev_pp <= x;
+		if (x > x_max_b) x_max_b <= x; if (x > x_max_b_prev & x < x_max_b) x_max_b_prev <= x; if (x > x_max_b_prev_p & x < x_max_b_prev) x_max_b_prev_p <= x; if (x > x_max_b_prev_pp & x < x_max_b_prev_p) x_max_b_prev_pp <= x;
 		if (y < y_min_g) y_min_g <= y; 
 		if (y < y_min_b) y_min_b <= y;
 		if (y > y_max_b) y_max_b <= y;
@@ -184,22 +184,29 @@ always @(posedge clk) begin
 		if (y > y_max_p) y_max_p <= y;
 	end
 	if (sop & in_valid) begin	// Reset bounds on start of packet
+		// red
 		x_min_r <= IMAGE_W-11'h1; x_max_r <= 0;
-		y_min_r <= IMAGE_H-11'h1; y_max_r <= 0; // red
+		y_min_r <= IMAGE_H-11'h1; y_max_r <= 0;
 		x_min_r_prev <= IMAGE_W-11'h1; x_max_r_prev <= 0;
+		// green
 		x_min_g <= IMAGE_W-11'h1; x_max_g <= 0;
-		y_min_g <= IMAGE_H-11'h1; y_max_g <= 0; // green
+		y_min_g <= IMAGE_H-11'h1; y_max_g <= 0;
 		x_min_g_prev <= IMAGE_W-11'h1; x_max_g_prev <= 0;
 		x_min_g_prev_p <= IMAGE_W-11'h1; x_max_g_prev_p <= 0;
+		x_min_g_prev_pp <= IMAGE_W-11'h1; x_max_g_prev_pp <= 0;
+		// blue
 		x_min_b <= IMAGE_W-11'h1; x_max_b <= 0;
-		y_min_b <= IMAGE_H-11'h1; y_max_b <= 0; // blue
+		y_min_b <= IMAGE_H-11'h1; y_max_b <= 0;
 		x_min_b_prev <= IMAGE_W-11'h1; x_max_b_prev <= 0;
 		x_min_b_prev_p <= IMAGE_W-11'h1; x_max_b_prev_p <= 0;
+		x_min_b_prev_pp <= IMAGE_W-11'h1; x_max_b_prev_pp <= 0;
+		// yellow
 		x_min_y <= IMAGE_W-11'h1; x_max_y <= 0;
-		y_min_y <= IMAGE_H-11'h1; y_max_y <= 0; // yellow
+		y_min_y <= IMAGE_H-11'h1; y_max_y <= 0;
 		x_min_y_prev <= IMAGE_W-11'h1; x_max_y_prev <= 0;
+		// pink
 		x_min_p <= IMAGE_W-11'h1; x_max_p <= 0;
-		y_min_p <= IMAGE_H-11'h1; y_max_p <= 0; // pink
+		y_min_p <= IMAGE_H-11'h1; y_max_p <= 0;
 		x_min_p_prev <= IMAGE_W-11'h1; x_max_p_prev <= 0;
 	end
 end
@@ -216,30 +223,30 @@ always@(posedge clk) begin
 	if (eop & in_valid & packet_video) begin  // Ignore non-video packets
 		// Latch edges for display overlay on next frame
 		// red
-		if (x_min_r_prev != IMAGE_W-11'h1) left_r <= x_min_r_prev;
+		if (x_min_r_prev != 0) left_r <= x_min_r_prev;
 		if (x_max_r_prev != 0) right_r <= x_max_r_prev;
-		if (y_min_r != IMAGE_W-11'h1) top_r <= y_min_r;
-		if (y_max_r != 0) bottom_r <= y_max_r;
+		if (y_min_r != 0) top_r <= y_min_r;
+		if (y_min_r != 0) bottom_r <= y_max_r;
 		// green
-		if (x_min_g_prev_p != IMAGE_W-11'h1) left_g <= x_min_g_prev_p;
-		if (x_max_g_prev_p != 0) right_g <= x_max_g_prev_p;
-		if (y_min_g != IMAGE_W-11'h1)  top_g <= y_min_g;
-		if (y_max_g != 0)  bottom_g <= y_max_g;
+		if (x_min_g_prev_pp != 0) left_g <= x_min_g_prev_pp;
+		if (x_max_g_prev_pp != 0) right_g <= x_max_g_prev_pp;
+		if (y_min_g != 0)  top_g <= y_min_g;
+		if (y_min_g != 0)  bottom_g <= y_max_g;
 		// blue
-		if (x_min_b_prev_p != IMAGE_W-11'h1) left_b <= x_min_b_prev_p;
-		if (x_max_b_prev_p != 0) right_b <= x_max_b_prev_p;
-		if (y_min_b != IMAGE_W-11'h1) top_b <= y_min_b;
-		if (y_max_b != 0) bottom_b <= y_max_b;
+		if (x_min_b_prev_pp != 0) left_b <= x_min_b_prev_pp;
+		if (x_max_b_prev_pp != 0) right_b <= x_max_b_prev_pp;
+		if (y_min_b != 0) top_b <= y_min_b;
+		if (y_min_b != 0) bottom_b <= y_max_b;
 		// yellow
-		if (x_min_y_prev != IMAGE_W-11'h1) left_y <= x_min_y_prev;
+		if (x_min_y_prev != 0) left_y <= x_min_y_prev;
 		if (x_max_y_prev != 0) right_y <= x_max_y_prev;
-		if (y_min_y != IMAGE_W-11'h1) top_y <= y_min_y;
-		if (y_max_y != 0) bottom_y <= y_max_y;
+		if (y_min_y != 0) top_y <= y_min_y;
+		if (y_min_y != 0) bottom_y <= y_max_y;
 		// pink
-		if (x_min_p_prev != IMAGE_W-11'h1) left_p <= x_min_p_prev;
+		if (x_min_p_prev != 0) left_p <= x_min_p_prev;
 		if (x_max_p_prev != 0) right_p <= x_max_p_prev;
-		if (y_min_p != IMAGE_W-11'h1) top_p <= y_min_p;
-		if (y_max_p != 0) bottom_p <= y_max_p;
+		if (y_min_p != 0) top_p <= y_min_p;
+		if (y_min_p != 0) bottom_p <= y_max_p;
 
 		// Start message writer FSM once every MSG_INTERVAL frames, if there is room in the FIFO
 		frame_count <= frame_count - 1;
@@ -297,6 +304,10 @@ wire [7:0] msg_buf_size;
 
 `define RED_BOX_MSG_ID "RBB" // -> #define EEE_IMGPROC_MSG_START ('R'<<16 | 'B'<<8 | 'B') in main.c
 
+// Message content: 
+// In order to filter out faulty boxes, we need to send over the exact info about the boxes: box width and box height or the top left and bottom right coordinates
+// Compute the perpendicular distances on ESP32? 
+// Filter by area of box (too small), ratio of height to width (accept near 1:1 ratio boxes), 
 always @(*) begin	// Write words to FIFO as state machine advances
 	case(msg_state)
 		2'b00: begin

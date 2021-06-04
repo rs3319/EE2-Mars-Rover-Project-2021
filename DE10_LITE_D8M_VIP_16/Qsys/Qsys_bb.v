@@ -15,6 +15,7 @@ module Qsys (
 	clk_sdram_clk,
 	clk_vga_clk,
 	d8m_xclkin_clk,
+	eee_imgproc_0_conduit_filter_new_signal,
 	eee_imgproc_0_conduit_mode_new_signal,
 	i2c_opencores_camera_export_scl_pad_io,
 	i2c_opencores_camera_export_sda_pad_io,
@@ -60,6 +61,7 @@ module Qsys (
 	output		clk_sdram_clk;
 	output		clk_vga_clk;
 	output		d8m_xclkin_clk;
+	input		eee_imgproc_0_conduit_filter_new_signal;
 	input		eee_imgproc_0_conduit_mode_new_signal;
 	inout		i2c_opencores_camera_export_scl_pad_io;
 	inout		i2c_opencores_camera_export_sda_pad_io;
