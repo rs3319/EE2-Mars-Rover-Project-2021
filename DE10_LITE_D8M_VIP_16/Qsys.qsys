@@ -18,7 +18,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -26,22 +26,6 @@
    {
       datum _originalDeviceFamily
       {
-         value = "Cyclone V";
-         type = "String";
-      }
-   }
-   element Qsys
-   {
-      datum _originalDeviceFamily
-      {
-         value = "MAX 10";
-         type = "String";
-      }
-   }
-   element Qsys
-   {
-      datum _originalDeviceFamily
-      {
          value = "MAX 10";
          type = "String";
       }
@@ -74,6 +58,14 @@
    {
       datum _originalDeviceFamily
       {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
          value = "Cyclone V";
          type = "String";
       }
@@ -83,6 +75,22 @@
       datum _originalDeviceFamily
       {
          value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
          type = "String";
       }
    }

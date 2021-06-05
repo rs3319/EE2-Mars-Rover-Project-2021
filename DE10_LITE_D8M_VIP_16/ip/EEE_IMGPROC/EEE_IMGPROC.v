@@ -212,7 +212,7 @@ always @(posedge clk) begin
 end
 
 // Process bounding box at the end of the frame.
-reg [1:0] msg_state;
+reg [2:0] msg_state;
 reg [10:0] left_r, right_r, top_r, bottom_r;
 reg [10:0] left_g, right_g, top_g, bottom_g;
 reg [10:0] left_b, right_b, top_b, bottom_b;
@@ -261,50 +261,50 @@ always@(posedge clk) begin
 end
 	
 // Generate output messages for CPU
-reg	[94:0]	msg_buf_in; // this
+reg	[31:0]	msg_buf_in;
 reg msg_buf_wr;
-wire [94:0] msg_buf_out; // this
+wire [31:0] msg_buf_out;
 wire msg_buf_rd, msg_buf_flush, msg_buf_empty;
 wire [7:0] msg_buf_size;
 
-`define RED_BOX_MSG_ID "RBB" // -> #define EEE_IMGPROC_MSG_START ('R'<<16 | 'B'<<8 | 'B') in main.c
+`define RED_BOX_MSG_ID "R" // -> #define EEE_IMGPROC_MSG_START 'R' in main.c
 // 1024 > 640 , 512 > 480 -> 38 bits * 5 = 190; 95 = 38 + 38 + 10 + 9
-// 10 + 9 + 10, 9 + 10 + 9
-// x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0],y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0],x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0],y_min_b[8:0]
+// 10 + 9 + 10, 9 + 10 + 9, 32 = 19 + 13
+// x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0],	y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]	,x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0],	y_min_b[8:0]
 // x_max_b_prev_p[9:0],y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0],x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0],y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]
 always @(*) begin	// Write words to FIFO as state machine advances
 	case(msg_state)
 		3'b000: begin
-			msg_buf_in = 32'b0;
-			msg_buf_wr = 1'b0;				// nothing written in buffer
+			msg_buf_in <= 32'b0;
+			msg_buf_wr <= 1'b0;				// nothing written in buffer
 		end
 		3'b001: begin
-			msg_buf_in = `RED_BOX_MSG_ID;
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {`RED_BOX_MSG_ID,5'h0,y_min_b[8:0],x_max_b_prev_pp[9:0]};
+			msg_buf_wr <= 1'b1;
 		end
 		3'b010: begin
-			msg_buf_in = {3'h0,x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0]};
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {3'h0,x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0]};
+			msg_buf_wr <= 1'b1;
 		end
 		3'b011: begin
-			msg_buf_in = {4'h0,y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]};
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {4'h0,y_max_r[8:0],x_min_g_prev_pp[9:0],y_min_g[8:0]};
+			msg_buf_wr <= 1'b1;
 		end
 		3'b100: begin
-			msg_buf_in = {3'h0,x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0]};
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {3'h0,x_max_g_prev_pp[9:0],y_max_g[8:0],x_min_b_prev_pp[9:0]};
+			msg_buf_wr <= 1'b1;
 		end
 		3'b101: begin
-			msg_buf_in = {4'h0,y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0]};
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {4'h0,y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0]};
+			msg_buf_wr <= 1'b1;
 		end
 		3'b110: begin
-			msg_buf_in = {3'h0,x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0]}; 
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {3'h0,x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0]}; 
+			msg_buf_wr <= 1'b1;
 		end
 		3'b111: begin
-			msg_buf_in = {4'h0,y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]};
-			msg_buf_wr = 1'b1;
+			msg_buf_in <= {4'h0,y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]};
+			msg_buf_wr <= 1'b1;
 		end
 	endcase
 end
