@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 //EEE_IMGPROC defines
-#define EEE_IMGPROC_MSG_START ('R'<<16 | 'B'<<8 | 'B')
+#define EEE_IMGPROC_MSG_START 'R'
 
 //offsets
 #define EEE_IMGPROC_STATUS 0    // image processor status
@@ -137,10 +137,9 @@ int main()
                 count++;
                 // Find out if there are words to read
                 int word = IORD(0x42000,EEE_IMGPROC_MSG); // Get next word from message buffer
-                if (word == EEE_IMGPROC_MSG_START) { printf("\n"); fprintf(fp,"\n");} // Newline on message identifier
+                if (word>>24 == EEE_IMGPROC_MSG_START) { printf("\n"); fprintf(fp,"\n");} // Newline on message identifier
                 printf("%08x",word);
                 fprintf(fp,"%08x",word);
-                break;
                 if (count >= 7) break;
             }
             fclose(fp);
