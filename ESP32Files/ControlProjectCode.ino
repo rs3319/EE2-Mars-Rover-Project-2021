@@ -222,11 +222,13 @@ if(PositionY > 40){
 //Recieve Drive status (position)
 if(Serial1.available()){
   DriveStatus = Serial1.readString();
+  if(DriveStatus != ""){
   Serial.printf("Received: %s \n",DriveStatus);
   if(DriveStatus == "done"){
     Drivebusy = false;
   }else{
   sscanf(DriveStatus.c_str(),"%d,%d,%d,%d",&PositionX,&PositionY,&Speed,&yaw);
+  }
   }
 }
 
