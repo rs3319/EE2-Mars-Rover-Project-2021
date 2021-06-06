@@ -72,32 +72,33 @@ Serial.println("Connected: "); Serial.print(WiFi.localIP());
 
 void processVision(unsigned int Vbuff[7]){
   int area_threshold = 0x8;
+  int upper_threshold = 1;
   int threshold = area_threshold;
   int ball_d = 4;
-  int focal_l = 800;
+  float focal_l = 800;
   int rover_l =  24;
   int centre_pixel = 320;
-  int rw = (Vbuff[1] & 0x3FF)-(Vbuff[1] >> 19);
-  int rh = (Vbuff[2] >> 19) - ((Vbuff[1] >> 10)&0x1FF);
-  int gw = (Vbuff[3] >> 19)-((Vbuff[2] >> 9)& 0x3FF);
-  int gh = ((Vbuff[3] >> 10)&0x1FF) - (Vbuff[2] & 0x1FF);
-  int bw = (Vbuff[0] & 0x3FF) - (Vbuff[3]&0x3FF);
-  int bh = (Vbuff[4] >> 19) - ((Vbuff[0] >> 10)& 0x1FF);
-  int yw = (Vbuff[5] >> 19) - ((Vbuff[4] >> 9)& 0x3FF);
-  int yh = ((Vbuff[5] >> 10)&0x1FF) - (Vbuff[4] & 0x1FF);
-  int pw = ((Vbuff[6] >> 9) & 0x3FF) - (Vbuff[5] * 0x3FF);
-  int ph = (Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19);
+  int rw = abs((Vbuff[1] & 0x3FF)-(Vbuff[1] >> 19)); //fine
+  int rh = abs((Vbuff[2] >> 19) - ((Vbuff[1] >> 10)&0x1FF)); //fine
+  int gw = abs((Vbuff[3] >> 19)-((Vbuff[2] >> 9)& 0x3FF)); //fine
+  int gh = abs(((Vbuff[3] >> 10)&0x1FF) - (Vbuff[2] & 0x1FF)); //fine
+  int bw = abs((Vbuff[0] & 0x3FF) - (Vbuff[3]&0x3FF)); //fine
+  int bh = abs((Vbuff[4] >> 19) - ((Vbuff[0] >> 10)& 0x1FF)); //fine
+  int yw = abs((Vbuff[5] >> 19) - ((Vbuff[4] >> 9)& 0x3FF)); //fine
+  int yh = abs(((Vbuff[5] >> 10)& 0x1FF) - (Vbuff[4] & 0x1FF)); //fine
+  int pw = abs(((Vbuff[6] >> 9) & 0x3FF) - (Vbuff[5] & 0x3FF)); //fine
+  int ph = abs((Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19)); //fine
   
-  int rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw*rh > area_threshold)) ? ((ball_d * focal_l / rw) + rover_l) : 0 ;
-  int gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw*gh > area_threshold)) ? ((ball_d * focal_l / gw) + rover_l) : 0;
-  int bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw*bh > area_threshold)) ? ((ball_d * focal_l / bw) + rover_l) : 0;
-  int ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw*yh > area_threshold)) ? ((ball_d * focal_l / yw) + rover_l) : 0;
-  int pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw*ph > area_threshold)) ? ((ball_d * focal_l / pw) + rover_l) : 0;
-  int rpix = (Vbuff[1] >> 19) + rw/2 + centre_pixel;
-  int gpix = ((Vbuff[2] >> 9)& 0x3FF) + gw/2 + centre_pixel;
-  int bpix = (Vbuff[3]&0x3FF) + bw/2 + centre_pixel;
-  int ypix = ((Vbuff[4] >> 9)& 0x3FF) + yw/2 + centre_pixel;
-  int ppix = (Vbuff[5] * 0x3FF) + pw/2 + centre_pixel;
+  float rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw < 400)) ? ((ball_d * focal_l / rw) + rover_l) : 0 ;
+  float gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw < 400) ) ? ((ball_d * focal_l / gw) + rover_l) : 0;
+  float bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw < 400)) ? ((ball_d * focal_l / bw) + rover_l) : 0;
+  float ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw < 400) ) ? ((ball_d * focal_l / yw) + rover_l) : 0;
+  float pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw < 400)) ? ((ball_d * focal_l / pw) + rover_l) : 0;
+  int rpix = (Vbuff[1] >> 19) + rw/2;
+  int gpix = ((Vbuff[2] >> 9)& 0x3FF) + gw/2;
+  int bpix = (Vbuff[3]&0x3FF) + bw/2;
+  int ypix = ((Vbuff[4] >> 9)& 0x3FF) + yw/2;
+  int ppix = (Vbuff[5] * 0x3FF) + pw/2;
   /*
   int rdist = VisionStatus[0] >> 24;
   int gdist = ((VisionStatus[0] >> 16) & 0xFF);
