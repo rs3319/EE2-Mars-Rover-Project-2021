@@ -4,7 +4,8 @@
 #include <String>
 #include <Arduino.h>
 #include <math.h>
-
+#include <sstream>
+#include <iostream>
 //Initialize pins for communucation with drive, vision and energy
 /*Pin Info:
  * IO16 - Arduino D9 Drive RX
@@ -27,11 +28,11 @@ int DriveTX = 17;
 const char *ssid = "";
 const char *password = "";
 //AsyncWebServer server(81);
-
+bool Drivebusy = false;
 
 //Params (RAW)
 String EnergyStatus = "debug energy";
-String VisionStatus;
+std::string VisionStatus;
 String DriveStatus;
 
 //Params (Decoded)
@@ -69,19 +70,34 @@ Serial.println("Connected: "); Serial.print(WiFi.localIP());
 }
 
 
-void processVision(int VisionStatus[3]){
-  int threshold = 0x8;
+void processVision(unsigned int Vbuff[7]){
+  int area_threshold = 0x8;
+  int threshold = area_threshold;
+  int ball_d = 4;
+  int focal_l = 800;
+  int rover_l =  24;
+  int centre_pixel = 320;
+  int rw = (Vbuff[1] & 0x3FF)-(Vbuff[1] >> 19);
+  int rh = (Vbuff[2] >> 19) - ((Vbuff[1] >> 10)&0x1FF);
+  int gw = (Vbuff[3] >> 19)-((Vbuff[2] >> 9)& 0x3FF);
+  int gh = ((Vbuff[3] >> 10)&0x1FF) - (Vbuff[2] & 0x1FF);
+  int bw = (Vbuff[0] & 0x3FF) - (Vbuff[3]&0x3FF);
+  int bh = (Vbuff[4] >> 19) - ((Vbuff[0] >> 10)& 0x1FF);
+  int yw = (Vbuff[5] >> 19) - ((Vbuff[4] >> 9)& 0x3FF);
+  int yh = ((Vbuff[5] >> 10)&0x1FF) - (Vbuff[4] & 0x1FF);
+  int pw = ((Vbuff[6] >> 9) & 0x3FF) - (Vbuff[5] * 0x3FF);
+  int ph = (Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19);
   
-  int rdist = 
-  int gdist = 
-  int bdist =
-  int ydist = 
-  int pdist = 
-  int rpix = 
-  int gpix = 
-  int bpix = 
-  int ypix =
-  int ppix = 
+  int rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw*rh > area_threshold)) ? ((ball_d * focal_l / rw) + rover_l) : 0 ;
+  int gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw*gh > area_threshold)) ? ((ball_d * focal_l / gw) + rover_l) : 0;
+  int bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw*bh > area_threshold)) ? ((ball_d * focal_l / bw) + rover_l) : 0;
+  int ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw*yh > area_threshold)) ? ((ball_d * focal_l / yw) + rover_l) : 0;
+  int pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw*ph > area_threshold)) ? ((ball_d * focal_l / pw) + rover_l) : 0;
+  int rpix = (Vbuff[1] >> 19) + rw/2 + centre_pixel;
+  int gpix = ((Vbuff[2] >> 9)& 0x3FF) + gw/2 + centre_pixel;
+  int bpix = (Vbuff[3]&0x3FF) + bw/2 + centre_pixel;
+  int ypix = ((Vbuff[4] >> 9)& 0x3FF) + yw/2 + centre_pixel;
+  int ppix = (Vbuff[5] * 0x3FF) + pw/2 + centre_pixel;
   /*
   int rdist = VisionStatus[0] >> 24;
   int gdist = ((VisionStatus[0] >> 16) & 0xFF);
@@ -205,24 +221,45 @@ if(PositionY > 40){
 */
 //Recieve Drive status (position)
 if(Serial1.available()){
-  DriveStatus = Serial1.readStringUntil('\n');
+  DriveStatus = Serial1.readString();
   Serial.printf("Received: %s \n",DriveStatus);
-  //Send drive position to vision
+  if(DriveStatus == "done"){
+    Drivebusy = false;
+  }else{
+  sscanf(DriveStatus.c_str(),"%d,%d,%d,%d",&PositionX,&PositionY,&Speed,&yaw);
+  }
 }
 
-
-//Recieve location of ping pong ball (if found on camera) 
+//Recieve location of ping pong ball (if found on camera) and send to database
 if(Serial2.available()){
-  VisionStatus = Serial2.readStringUntil('\n');
-  Serial.printf("Received: %s \n",VisionStatus);
+ char *byteBuff;
+ String VStatus;
+ VStatus = Serial2.readString();
+ Serial.print(VStatus);
+ VisionStatus = VStatus.c_str();
+ unsigned int Vbuff[7];
+ if (VisionStatus.size()>=56){
+ VisionStatus = VisionStatus.substr(0,56);
+ for(int i = 0;i<7;i++){
+   std::stringstream ss;
+   ss << std::hex << VisionStatus.substr(i*8,8);
+   ss >> Vbuff[i];
+   Serial.print(Vbuff[i]);
+   Serial.print("\n");
+ }
+ }
+ if((Vbuff[0]>>24)=='R'){ // Verify Sync
+  processVision(Vbuff);
+ }
 }
-//Send ping pong ball location using PostType Object
+
+//Dummy pingpong balls
 if(WiFi.status() == WL_CONNECTED){
   int Dummy[3];
   Dummy[0] = random(pow(2,32));
   Dummy[1] = random(pow(2,32));
   Dummy[2] = random(pow(2,32)); 
-  processVision(Dummy);
+  //processVision(Dummy);
   }
   
 
@@ -247,26 +284,30 @@ if(WiFi.status() == WL_CONNECTED){
     Serial.print("HTTP ERROR Code: ");
     Serial.print(httpResponseCode);
   }
+  
   http.end();
   //GET Commands from remote server
   /* Backend contains database with list of commands, 
    * sorts by oldest and sends to ESP32 and then deletes the oldest command 
    */
-   http.begin(serverNameGET);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  //Serial.println("HTTP GET command");
-  httpResponseCode = http.GET(); 
-  String CurrentCommand = "";
-  if(httpResponseCode>0){
-   //Serial.print("httpResponseCode :");
-   //Serial.println(httpResponseCode);
-   CurrentCommand = http.getString();
-   if(CurrentCommand != "nil"){
-   Serial.println(CurrentCommand);
+   if(!Drivebusy){
+     http.begin(serverNameGET);
+     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+     //Serial.println("HTTP GET command");
+     httpResponseCode = http.GET(); 
+     String CurrentCommand = "";
+     if(httpResponseCode>0){
+     //Serial.print("httpResponseCode :");
+     //Serial.println(httpResponseCode);
+     CurrentCommand = http.getString();
+     if(CurrentCommand != "nil"){
+         Serial.println(CurrentCommand);
+         Serial1.println(CurrentCommand);
+         Drivebusy = true;
+     }
+    }
+    http.end();
    }
-  }
-  http.end();
-
 }
 delay(1000);
 }
