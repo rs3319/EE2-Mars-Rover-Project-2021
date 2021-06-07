@@ -97,7 +97,7 @@
           <span class="dht-labels">Speed</span> 
           <span id="speedvalue">%SPEED%</span>
         </p> </td></tr>
-                  <tr><td align="center"><button onclick="location.href='http://esp32-mars-rover.000webhostapp.com/sql_energy_chart.php'" type="button"> View Energy Status</button></td><td></td><td align="center"><button onclick="location.href='http://esp32-mars-rover.000webhostapp.com/sql-position-plot.php'" type="button">
+                  <tr><td align="center"><button onclick="location.href='http://esp32-mars-rover.000webhostapp.com/sql_energy_chart.php'" type="button"> View Energy Status</button></td><td></td><td align="center"><button onclick="location.href='http://esp32-mars-rover.000webhostapp.com/sql-terrain-map.php'" type="button">
          View Terrain Map</button></td><td></td><td></td><td></td><td align="right"> <p align ="right">
                     Move to coordinate:
                     <br>
