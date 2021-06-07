@@ -18,7 +18,7 @@
     </head>
     <body>
     
-
+    <h1 class ="text-center" align="center" style="color:yellow;">ESP32 Mars Rover Dashboard</h1> <br>
 
         <section class="main">
         
