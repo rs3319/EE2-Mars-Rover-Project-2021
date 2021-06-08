@@ -76,6 +76,7 @@ boolean standby = 0;
 float ey=0,expy=0,tary=0;
 float ex=0,expx=0,tarx=0;
 float expang = 0;
+float recordx = 0;
 String command = "";
 String dista = "";
 int fcomma = 0;
@@ -269,6 +270,7 @@ void setup() {
   SPI.setBitOrder(MSBFIRST);
   
   Serial.begin(38400);
+  Serial1.begin(9600);
 
   if(mousecam_init()==-1)
   {
@@ -456,6 +458,7 @@ Serial.println("Distance_y = " + String(total_y));
         left = 0;
         dista = command.substring(fcomma+1,scomma);
         expang = dista.toFloat();
+        recordx = total_x;
         
       }
 
@@ -479,6 +482,8 @@ Serial.println("Distance_y = " + String(total_y));
   }
          
    ey = tary-total_y;
+   //ex = tarx-total_x;
+   //angconst = 
           Serial.print(ey);
           Serial.println("target distance = " + String(tary));
           //Serial.print(atan(2));
@@ -492,24 +497,24 @@ Serial.println("Distance_y = " + String(total_y));
     digitalWrite(pwmr, 255-closed_loop*255); 
     digitalWrite(pwml, 255-closed_loop*255);
    }else if(ey <= 0 && forward){
-    digitalWrite(pwmr, 0);
-    digitalWrite(pwml, 0);
+    digitalWrite(pwmr,LOW);
+    digitalWrite(pwml,LOW);
    }
 
    
 
   if (right) {
-    //if(atan(total_x/tary)<expang){
+    if(total_x>=recordx-180){
     DIRRstate = LOW;
     DIRLstate = LOW;
     digitalWrite(DIRR, DIRRstate);
     digitalWrite(DIRL, DIRLstate); 
     digitalWrite(pwmr, 255-closed_loop*255);
     digitalWrite(pwml, 255-closed_loop*255);
-    //}else if(atan(total_x/total_y)>=1.5708){
-      //digitalWrite(pwmr,LOW);
-      //digitalWrite(pwml,LOW);
-    //}
+    }else if(total_x<recordx-180){
+      digitalWrite(pwmr,LOW);
+      digitalWrite(pwml,LOW);
+    }
     
   }
 
@@ -522,17 +527,22 @@ Serial.println("Distance_y = " + String(total_y));
     digitalWrite(pwmr, 255-closed_loop*255);
     digitalWrite(pwml, 255-closed_loop*255); 
   }else if(ey >= 0 && backward){
-    digitalWrite(pwmr, 0);
-    digitalWrite(pwml, 0);
+    digitalWrite(pwmr,LOW);
+    digitalWrite(pwml,LOW);
   }
  
   if (left) {
+    if(total_x<=recordx+180){
     DIRRstate = HIGH;
     DIRLstate = HIGH;
     digitalWrite(DIRR, DIRRstate);
     digitalWrite(DIRL, DIRLstate); 
     digitalWrite(pwmr, 255-closed_loop*255);
     digitalWrite(pwml, 255-closed_loop*255);
+    }else if(total_x>recordx+180){
+      digitalWrite(pwmr,LOW);
+      digitalWrite(pwml,LOW);
+    }
     
   }
 
