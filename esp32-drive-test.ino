@@ -9,9 +9,11 @@ Serial1.begin(9600,SERIAL_8N1,DriveRX,DriveTX);
 
 void loop() {
   // put your main code here, to run repeatedly:
+Serial.println("Reading");
 if(Serial1.available()){
   String ReadData = Serial1.readStringUntil('\n');
   Serial.print(ReadData);
 }
+Serial.println("Writing");
 Serial1.println("fw,10,10");
 }
