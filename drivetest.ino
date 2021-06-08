@@ -1,5 +1,5 @@
-int PosX;
-int PosY;
+int PosX = 0;
+int PosY = 0;
 void setup() {
   // put your setup code here, to run once:
 Serial1.begin(9600);
