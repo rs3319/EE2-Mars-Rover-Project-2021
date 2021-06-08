@@ -10,10 +10,12 @@ void loop() {
   // put your main code here, to run repeatedly:
 PosX += 10;
 PosY += 10;
+Serial.println("Reading");
 if(Serial1.available()){
   String Status = Serial1.readStringUntil('\n');
-  Serial.print(Status);
+  Serial.println(Status);
 }
+Serial.println("Writing");
 String ToWrite = (String)PosX +","+ (String)PosY + ",0,0";
-Serial1.write(ToWrite);
+Serial1.println(ToWrite);
 }
