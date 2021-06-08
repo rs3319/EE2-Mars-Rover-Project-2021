@@ -25,8 +25,8 @@ int DriveRX = 16;
 int DriveTX = 17;
 
 //Connect to internet
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "Sentil 2.4";
+const char *password = "alden2001";
 //AsyncWebServer server(81);
 bool Drivebusy = false;
 
@@ -89,16 +89,16 @@ void processVision(unsigned int Vbuff[7]){
   int pw = abs(((Vbuff[6] >> 9) & 0x3FF) - (Vbuff[5] & 0x3FF)); //fine
   int ph = abs((Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19)); //fine
   
-  float rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw < 400)) ? ((ball_d * focal_l / rw) + rover_l) : 0 ;
-  float gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw < 400) ) ? ((ball_d * focal_l / gw) + rover_l) : 0;
-  float bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw < 400)) ? ((ball_d * focal_l / bw) + rover_l) : 0;
-  float ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw < 400) ) ? ((ball_d * focal_l / yw) + rover_l) : 0;
-  float pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw < 400)) ? ((ball_d * focal_l / pw) + rover_l) : 0;
+  float rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw < 400)) ? ((ball_d * focal_l / rw) ) : 0 ;
+  float gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw < 400) ) ? ((ball_d * focal_l / gw) ) : 0;
+  float bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw < 400)) ? ((ball_d * focal_l / bw) ) : 0;
+  float ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw < 400) ) ? ((ball_d * focal_l / yw) ) : 0;
+  float pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw < 400)) ? ((ball_d * focal_l / pw) ) : 0;
   int rpix = (Vbuff[1] >> 19) + rw/2;
   int gpix = ((Vbuff[2] >> 9)& 0x3FF) + gw/2;
   int bpix = (Vbuff[3]&0x3FF) + bw/2;
   int ypix = ((Vbuff[4] >> 9)& 0x3FF) + yw/2;
-  int ppix = (Vbuff[5] * 0x3FF) + pw/2;
+  int ppix = (Vbuff[5] & 0x3FF) + pw/2;
   /*
   int rdist = VisionStatus[0] >> 24;
   int gdist = ((VisionStatus[0] >> 16) & 0xFF);
@@ -123,7 +123,7 @@ void processVision(unsigned int Vbuff[7]){
     psi = theta + yaw;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi); 
+    ppy = PositionY + r*cos(psi) + rover_l; 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -142,7 +142,7 @@ void processVision(unsigned int Vbuff[7]){
     psi = theta + yaw;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi); 
+    ppy = PositionY + r*cos(psi) + rover_l;
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -161,7 +161,7 @@ void processVision(unsigned int Vbuff[7]){
     psi = theta + yaw;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi); 
+   ppy = PositionY + r*cos(psi) + rover_l; 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -180,7 +180,7 @@ void processVision(unsigned int Vbuff[7]){
     psi = theta + yaw;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi); 
+    ppy = PositionY + r*cos(psi) + rover_l;
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -199,7 +199,7 @@ void processVision(unsigned int Vbuff[7]){
     psi = theta + yaw;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi); 
+    ppy = PositionY + r*cos(psi) + rover_l; 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -237,7 +237,7 @@ if(Serial1.available()){
 if(Serial2.available()){
  char *byteBuff;
  String VStatus;
- VStatus = Serial2.readString();
+ VStatus = Serial2.readStringUntil('\n');
  Serial.print(VStatus);
  VisionStatus = VStatus.c_str();
  unsigned int Vbuff[7];
@@ -258,13 +258,14 @@ if(Serial2.available()){
 
 //Dummy pingpong balls
 if(WiFi.status() == WL_CONNECTED){
+  /*
   int Dummy[3];
   Dummy[0] = random(pow(2,32));
   Dummy[1] = random(pow(2,32));
   Dummy[2] = random(pow(2,32)); 
   //processVision(Dummy);
   }
-  
+  */
 
 //POST data to command
 if(WiFi.status() == WL_CONNECTED){
