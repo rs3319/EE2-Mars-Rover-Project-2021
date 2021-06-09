@@ -75,12 +75,14 @@ boolean standby = 0;
 
 float ey=0,expy=0,tary=0;
 float ex=0,expx=0,tarx=0;
-float expang = 0;
-float recordx = 0;
 String command = "";
 String dista = "";
 int fcomma = 0;
 int scomma = 0;
+float overallang = 0;
+float expang = 0;
+float recordx = 0;
+float posx=0,posy=0;
 
 
 unsigned int loopTrigger;
@@ -374,7 +376,7 @@ byte frame[ADNS3080_PIXELS_X * ADNS3080_PIXELS_Y];
   Serial.print((int)md.dx); Serial.print(',');
   Serial.print((int)md.dy); Serial.println(')');
 
-  //Serial.println(md.max_pix);
+  Serial.println(md.max_pix);
   delay(100);
 
 
@@ -384,8 +386,8 @@ byte frame[ADNS3080_PIXELS_X * ADNS3080_PIXELS_Y];
 total_x1 = (total_x1 + distance_x);
 total_y1 = (total_y1 + distance_y);
 
-total_x = 10*total_x1/157; //Conversion from counts per inch to mm (400 counts per inch)
-total_y = 10*total_y1/157; //Conversion from counts per inch to mm (400 counts per inch)
+total_x = total_x1/157; 
+total_y = total_y1/157; 
     
 
  Serial.print('\n');
@@ -447,7 +449,17 @@ Serial.println("Distance_y = " + String(total_y));
         left = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
-        tary = tary + expy*10;
+        tary = tary + expy;
+        
+        if(overallang==0){
+            posy = posy + expy;
+        }else if(overallang==90){
+            posx = posx + expy;
+        }else if(overallang==-90){
+            posx = posx - expy;
+        }else if(overallang==180 || overallang==-180){
+            posy = posy - expy;
+        }
         
       }
 
@@ -458,6 +470,7 @@ Serial.println("Distance_y = " + String(total_y));
         left = 0;
         dista = command.substring(fcomma+1,scomma);
         expang = dista.toFloat();
+        overallang = overallang + expang;
         recordx = total_x;
         
       }
@@ -467,6 +480,9 @@ Serial.println("Distance_y = " + String(total_y));
         forward = 0;
         backward = 0;
         right = 0;
+        dista = command.substring(fcomma+1,scomma);
+        expang = dista.toFloat();
+        overallang = overallang - expang;
       }
 
       if(command.substring(0,2)=="rv"){
@@ -476,18 +492,34 @@ Serial.println("Distance_y = " + String(total_y));
         left = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
-        tary = tary - expy*10;
+        tary = tary - expy;
+
+        if(overallang==0){
+            posy = posy - expy;
+        }else if(overallang==90){
+            posx = posx - expy;
+        }else if(overallang==-90){
+            posx = posx + expy;
+        }else if(overallang==180 || overallang==-180){
+            posy = posy + expy;
+        }
       }
+     
+
    command = "";
+   
   }
          
    ey = tary-total_y;
    //ex = tarx-total_x;
-   //angconst = 
           Serial.print(ey);
           Serial.println("target distance = " + String(tary));
-          //Serial.print(atan(2));
-          //Serial.println("test" + String(fcomma));
+          Serial.println("current angle = "+ String(overallang));
+
+   
+   Serial.println("posx="+String(posx));
+   Serial.println("posy="+String(posy));
+   
    if(ey>0 && forward)   {      
 
     DIRRstate = HIGH;
@@ -499,21 +531,25 @@ Serial.println("Distance_y = " + String(total_y));
    }else if(ey <= 0 && forward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
+    Serial1.write("done");
+    forward = 0;
    }
 
    
 
   if (right) {
-    if(total_x>=recordx-180){
+    if(total_x>=recordx-18){
     DIRRstate = LOW;
     DIRLstate = LOW;
     digitalWrite(DIRR, DIRRstate);
     digitalWrite(DIRL, DIRLstate); 
     digitalWrite(pwmr, 255-closed_loop*255);
     digitalWrite(pwml, 255-closed_loop*255);
-    }else if(total_x<recordx-180){
+    }else if(total_x<recordx-18){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
+      Serial1.write("done");
+      right = 0;
     }
     
   }
@@ -529,27 +565,31 @@ Serial.println("Distance_y = " + String(total_y));
   }else if(ey >= 0 && backward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
+    Serial1.write("done");
+    backward = 0;
   }
  
   if (left) {
-    if(total_x<=recordx+180){
+    if(total_x<=recordx+18){
     DIRRstate = HIGH;
     DIRLstate = HIGH;
     digitalWrite(DIRR, DIRRstate);
     digitalWrite(DIRL, DIRLstate); 
     digitalWrite(pwmr, 255-closed_loop*255);
     digitalWrite(pwml, 255-closed_loop*255);
-    }else if(total_x>recordx+180){
+    }else if(total_x>recordx+18){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
+      Serial1.write("done");
+      left = 0;
     }
     
   }
 
 
   if (standby) {
-    digitalWrite(pwmr, 0);
-    digitalWrite(pwml, 0);
+    digitalWrite(pwmr, LOW);
+    digitalWrite(pwml, LOW);
     
   }
 
@@ -686,12 +726,6 @@ float pidi(float pid_input){
   return u0i;
 }
 
-/*void decoding(String code){
-  if(code.substring(0,1)=="fw"){
-    forward = 1;
-    expy = atof(code.substring(3,4));
-    tary = tary + expy;
-  }
-}*/
+
 
 /*end of the program.*/
