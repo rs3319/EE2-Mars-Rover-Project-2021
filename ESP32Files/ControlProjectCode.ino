@@ -6,6 +6,7 @@
 #include <math.h>
 #include <sstream>
 #include <iostream>
+#include <deque>
 //Initialize pins for communucation with drive, vision and energy
 /*Pin Info:
  * IO16 - Arduino D9 Drive RX
@@ -23,20 +24,25 @@ int VisionRX = 19;
 int VisionTX = 18;
 int DriveRX = 16; 
 int DriveTX = 17;
+bool mv = false;
 
 //Connect to internet
-const char *ssid = "Sentil 2.4";
-const char *password = "alden2001";
+const char *ssid = "";
+const char *password = "";
 //AsyncWebServer server(81);
 bool Drivebusy = false;
 
 //Params (RAW)
-String EnergyStatus = "debug energy";
+float EnergyStatus = 100;
 std::string VisionStatus;
 String DriveStatus;
-
+std::deque<String> IQueue;
+String CurrentCommand = "";
 //Params (Decoded)
 int Speed;
+int prevX = 0;
+int prevY = 0;
+int distTravelled;
 int PositionX = 0;
 int PositionY = 0;
 int yaw;
@@ -69,6 +75,15 @@ while(WiFi.status() != WL_CONNECTED){
 Serial.println("Connected: "); Serial.print(WiFi.localIP());
 }
 
+void HandleWarning(){
+  int x,y;
+  Serial1.println("st,0,0");
+  IQueue.push_front("tl,90,0");
+  IQueue.push_front("fw,10,0");
+  IQueue.push_front("tr,90,0");
+  IQueue.push_front("fw,10,0");
+  
+}
 
 void processVision(unsigned int Vbuff[7]){
   int area_threshold = 0x8;
@@ -212,7 +227,7 @@ void processVision(unsigned int Vbuff[7]){
 
 void loop() {
 //Recieve Energy status
-EnergyStatus = random(300);
+EnergyStatus -= (float)random(300)/1000;
 /*
 PositionX += 10;
 PositionY += 5;
@@ -222,13 +237,16 @@ if(PositionY > 40){
 */
 //Recieve Drive status (position)
 if(Serial1.available()){
-  DriveStatus = Serial1.readString();
+  DriveStatus = Serial1.readStringUntil('\n');
   if(DriveStatus != ""){
   Serial.printf("Received: %s \n",DriveStatus);
   if(DriveStatus == "done"){
     Drivebusy = false;
   }else{
+  prevX = PositionX;
+  prevY = PositionY;
   sscanf(DriveStatus.c_str(),"%d,%d,%d,%d",&PositionX,&PositionY,&Speed,&yaw);
+  distTravelled += PositionX-prevX + PositionY-prevY;
   }
   }
 }
@@ -257,8 +275,9 @@ if(Serial2.available()){
 }
 
 //Dummy pingpong balls
-if(WiFi.status() == WL_CONNECTED){
+
   /*
+  if(WiFi.status() == WL_CONNECTED){
   int Dummy[3];
   Dummy[0] = random(pow(2,32));
   Dummy[1] = random(pow(2,32));
@@ -295,22 +314,71 @@ if(WiFi.status() == WL_CONNECTED){
    * sorts by oldest and sends to ESP32 and then deletes the oldest command 
    */
    if(!Drivebusy){
+    Serial.println("Drive Not busy");
+    if(IQueue.size() > 0){
+      Serial.println("IQUEUE");
+      Serial.println(IQueue.front());
+      Serial1.println(IQueue.front());
+      CurrentCommand = IQueue.front();
+      IQueue.pop_front();
+      Drivebusy = true;
+    }else{
      http.begin(serverNameGET);
      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
      //Serial.println("HTTP GET command");
      httpResponseCode = http.GET(); 
-     String CurrentCommand = "";
+     
      if(httpResponseCode>0){
      //Serial.print("httpResponseCode :");
      //Serial.println(httpResponseCode);
      CurrentCommand = http.getString();
      if(CurrentCommand != "nil"){
          Serial.println(CurrentCommand);
-         Serial1.println(CurrentCommand);
-         Drivebusy = true;
+         if(CurrentCommand.substring(0,2) == "mv"){
+          Serial.println("move");
+               std::string temp;
+               String temps;
+               int x = 0;
+               int y = 0;
+               sscanf(CurrentCommand.substring(3).c_str(),"%d,%d",&x,&y);
+               Serial.println(CurrentCommand.substring(3).c_str());
+               int dx = x-PositionX;
+               int dy = y-PositionY;
+               IQueue.push_back("yw,0,0");
+               if(dy>0){
+                  temps = "fw," + String(dy) + ",0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+               }else{
+                  temps = "rv," + String(abs(dy)) + ",0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+               }
+               if(dx!=0){
+                if(dx>0){
+                  temps = "tr,90,0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+                  temps = "fw," + String(dx) + ",0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+                }else{
+                  temps = "tl,90,0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+                  temps = "fw," + String(abs(dx)) + ",0";
+                  IQueue.push_back(temps);
+                  Serial.println("push_backed: "  + temps);
+                }
+               }
+           }else{
+            Serial1.println(CurrentCommand);
+            Drivebusy = true;
+           }
      }
     }
     http.end();
+   }
    }
 }
 delay(1000);
