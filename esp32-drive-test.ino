@@ -12,8 +12,10 @@ void loop() {
 Serial.println("Reading");
 if(Serial1.available()){
   String ReadData = Serial1.readStringUntil('\n');
-  Serial.print("Recieved: " + ReadData);
+  Serial.println("Recieved: " + ReadData);
 }
 Serial.println("Writing");
-Serial1.println("Hello");
+Serial1.println("Hello esp");
+//Serial1.print("Hello esp;");
+delay(1000);
 }
