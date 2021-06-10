@@ -89,10 +89,10 @@ assign value = cmax;
 // Detect red, green, blue, yellow, pink and white areas
 // https://alloyui.com/examples/color-picker/hsv.html
 wire red_detect, green_detect, blue_detect, white_detect, yellow_detect, pink_detect, black_detect;
-assign red_detect 	 = hue <= 15  & hue >= 5   & saturation <= 235 & saturation >= 175 & value >= 150 & value <= 220 & red[7] & ~green[7] & ~blue[7]; // well detected, with some noise from blue
-assign green_detect  = hue <= 170 & hue >= 160 & saturation <= 230 & saturation >= 165 & value <= 155 & value >= 60 & !red[7]; // lots of green noise from dark area (180~100)
+assign red_detect 	 = hue <= 15  & hue >= 5   & saturation <= 235 & saturation >= 175 & value >= 120 & value <= 220 & red[7] & ~green[7] & ~blue[7]; // well detected, with some noise from blue
+assign green_detect  = hue <= 170 & hue >= 155 & saturation <= 215 & saturation >= 175 & value <= 190 & value >= 60 & !red[7]; // lots of green noise from dark area (180~100)
 assign blue_detect   = hue <= 215 & hue >= 205 & saturation <= 220 & saturation >= 130 & value <= 125 & value >= 45 & !red[7]; // blue not found, detected as green
-assign yellow_detect = hue <= 100 & hue >= 80 & saturation <= 140 & saturation >= 85 & value >= 150 & value <= 180 & red[7] & green[7] & !blue[7]; // yellow falsely detected at some bright areas
+assign yellow_detect = hue <= 100 & hue >= 80 & saturation <= 140 & saturation >= 85 & value >= 150 & value <= 220 & red[7] & green[7] & !blue[7]; // yellow falsely detected at some bright areas
 assign pink_detect 	 = hue <= 30 & hue >= 7 & saturation <= 70 & saturation >= 30 & value >= 160 & value <= 180; // pink rarely detected
 assign white_detect  = red[7] & red[6] & green[7] & green[6] & blue[7] & blue[6];
 assign black_detect  = !((red[7:3] == 5'h0) & (green[7:3] == 5'h0) & (blue[7:3] == 5'h0)); 
@@ -148,7 +148,7 @@ end
 // Find first and last r,g,b,y,p pixels
 reg [10:0] x_min_r, y_min_r, x_max_r, y_max_r, x_min_r_prev, x_max_r_prev;
 reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp;
-reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p, x_min_b_prev_pp, x_max_b_prev_pp;
+reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p, x_min_b_prev_pp, x_max_b_prev_pp, y_min_b_prev;
 reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p, x_min_p_prev, x_max_p_prev;
 always @(posedge clk) begin
@@ -167,7 +167,7 @@ always @(posedge clk) begin
 	if (blue_detect & in_valid) begin	// blue
 		if (x < x_min_b) x_min_b <= x; if (x < x_min_b_prev & x > x_min_b) x_min_b_prev <= x; if (x < x_min_b_prev_p & x > x_min_b_prev) x_min_b_prev_p <= x; if (x < x_min_b_prev_pp & x > x_min_b_prev_p) x_min_b_prev_pp <= x;
 		if (x > x_max_b) x_max_b <= x; if (x > x_max_b_prev & x < x_max_b) x_max_b_prev <= x; if (x > x_max_b_prev_p & x < x_max_b_prev) x_max_b_prev_p <= x; if (x > x_max_b_prev_pp & x < x_max_b_prev_p) x_max_b_prev_pp <= x;
-		if (y < y_min_b) y_min_b <= y;
+		if (y < y_min_b) y_min_b <= y; if (y < y_min_b_prev & y > y_min_b) y_min_b_prev <= y;
 		if (y > y_max_b) y_max_b <= y;
 	end
 	if (yellow_detect & in_valid) begin	// yellow
@@ -199,6 +199,7 @@ always @(posedge clk) begin
 		x_min_b_prev <= IMAGE_W-11'h1; x_max_b_prev <= 0;
 		x_min_b_prev_p <= IMAGE_W-11'h1; x_max_b_prev_p <= 0;
 		x_min_b_prev_pp <= IMAGE_W-11'h1; x_max_b_prev_pp <= 0;
+		y_min_b_prev <= IMAGE_W-11'h1;
 		// yellow
 		x_min_y <= IMAGE_W-11'h1; x_max_y <= 0;
 		y_min_y <= IMAGE_H-11'h1; y_max_y <= 0;
@@ -226,14 +227,14 @@ always@(posedge clk) begin
 		top_r <= y_min_r;
 		bottom_r <= y_max_r;
 		// green
-		left_g <= x_min_g_prev_pp;
-		right_g <= x_max_g_prev_pp;
+		left_g <= x_min_g_prev_p;
+		right_g <= x_max_g_prev_p;
 		top_g <= y_min_g;
 		bottom_g <= y_max_g;
 		// blue
 		left_b <= x_min_b_prev_pp;
 		right_b <= x_max_b_prev_pp;
-		top_b <= y_min_b;
+		top_b <= y_min_b_prev;
 		bottom_b <= y_max_b;
 		// yellow
 		left_y <= x_min_y;
