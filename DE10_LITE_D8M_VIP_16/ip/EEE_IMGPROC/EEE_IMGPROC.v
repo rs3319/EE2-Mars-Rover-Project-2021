@@ -149,7 +149,7 @@ end
 reg [10:0] x_min_r, y_min_r, x_max_r, y_max_r, x_min_r_prev, x_max_r_prev;
 reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp;
 reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p, x_min_b_prev_pp, x_max_b_prev_pp;
-reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y, x_min_y_prev, x_max_y_prev;
+reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p, x_min_p_prev, x_max_p_prev;
 always @(posedge clk) begin
 	if (red_detect & in_valid) begin	// Update bounds when the pixel is red
@@ -167,13 +167,12 @@ always @(posedge clk) begin
 	if (blue_detect & in_valid) begin	// blue
 		if (x < x_min_b) x_min_b <= x; if (x < x_min_b_prev & x > x_min_b) x_min_b_prev <= x; if (x < x_min_b_prev_p & x > x_min_b_prev) x_min_b_prev_p <= x; if (x < x_min_b_prev_pp & x > x_min_b_prev_p) x_min_b_prev_pp <= x;
 		if (x > x_max_b) x_max_b <= x; if (x > x_max_b_prev & x < x_max_b) x_max_b_prev <= x; if (x > x_max_b_prev_p & x < x_max_b_prev) x_max_b_prev_p <= x; if (x > x_max_b_prev_pp & x < x_max_b_prev_p) x_max_b_prev_pp <= x;
-		if (y < y_min_g) y_min_g <= y; 
 		if (y < y_min_b) y_min_b <= y;
 		if (y > y_max_b) y_max_b <= y;
 	end
 	if (yellow_detect & in_valid) begin	// yellow
-		if (x < x_min_y) x_min_y <= x; if (x < x_min_y_prev & x > x_min_y) x_min_y_prev <= x;
-		if (x > x_max_y) x_max_y <= x; if (x > x_max_y_prev & x < x_max_y) x_max_y_prev <= x;
+		if (x < x_min_y) x_min_y <= x; 
+		if (x > x_max_y) x_max_y <= x; 
 		if (y < y_min_y) y_min_y <= y;
 		if (y > y_max_y) y_max_y <= y;
 	end
@@ -203,7 +202,6 @@ always @(posedge clk) begin
 		// yellow
 		x_min_y <= IMAGE_W-11'h1; x_max_y <= 0;
 		y_min_y <= IMAGE_H-11'h1; y_max_y <= 0;
-		x_min_y_prev <= IMAGE_W-11'h1; x_max_y_prev <= 0;
 		// pink
 		x_min_p <= IMAGE_W-11'h1; x_max_p <= 0;
 		y_min_p <= IMAGE_H-11'h1; y_max_p <= 0;
@@ -238,8 +236,8 @@ always@(posedge clk) begin
 		top_b <= y_min_b;
 		bottom_b <= y_max_b;
 		// yellow
-		left_y <= x_min_y_prev;
-		right_y <= x_max_y_prev;
+		left_y <= x_min_y;
+		right_y <= x_max_y;
 		top_y <= y_min_y;
 		bottom_y <= y_max_y;
 		// pink
@@ -271,7 +269,7 @@ wire [7:0] msg_buf_size;
 // 1024 > 640 , 512 > 480 -> 38 bits * 5 = 190; 95 = 38 + 38 + 10 + 9
 // 10 + 9 + 10, 9 + 10 + 9, 32 = 19 + 13
 // x_min_r_prev[9:0],y_min_r[8:0],x_max_r_prev[9:0],	y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]	,x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_p[9:0],	y_min_b[8:0]
-// x_max_b_prev_p[9:0],y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0],x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0],y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]
+// x_max_b_prev_p[9:0],y_max_b[8:0],x_min_y[9:0],y_min_y[8:0],x_max_y[9:0],y_max_y[8:0],x_min_p_prev[9:0],y_min_p[8:0],x_max_p_prev[9:0],y_max_p[8:0]
 always @(*) begin	// Write words to FIFO as state machine advances
 	case(msg_state)
 		3'b000: begin
@@ -295,11 +293,11 @@ always @(*) begin	// Write words to FIFO as state machine advances
 			msg_buf_wr <= 1'b1;
 		end
 		3'b101: begin
-			msg_buf_in <= {4'h0,y_max_b[8:0],x_min_y_prev[9:0],y_min_y[8:0]};
+			msg_buf_in <= {4'h0,y_max_b[8:0],x_min_y[9:0],y_min_y[8:0]};
 			msg_buf_wr <= 1'b1;
 		end
 		3'b110: begin
-			msg_buf_in <= {3'h0,x_max_y_prev[9:0],y_max_y[8:0],x_min_p_prev[9:0]}; 
+			msg_buf_in <= {3'h0,x_max_y[9:0],y_max_y[8:0],x_min_p_prev[9:0]}; 
 			msg_buf_wr <= 1'b1;
 		end
 		3'b111: begin
