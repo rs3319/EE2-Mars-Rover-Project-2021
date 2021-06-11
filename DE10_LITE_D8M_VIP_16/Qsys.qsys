@@ -50,6 +50,22 @@
    {
       datum _originalDeviceFamily
       {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
+      }
+   }
+   element Qsys
+   {
+      datum _originalDeviceFamily
+      {
          value = "MAX 10";
          type = "String";
       }
@@ -75,22 +91,6 @@
       datum _originalDeviceFamily
       {
          value = "MAX 10";
-         type = "String";
-      }
-   }
-   element Qsys
-   {
-      datum _originalDeviceFamily
-      {
-         value = "MAX 10";
-         type = "String";
-      }
-   }
-   element Qsys
-   {
-      datum _originalDeviceFamily
-      {
-         value = "Cyclone V";
          type = "String";
       }
    }
@@ -111,7 +111,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -132,7 +132,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -145,7 +145,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -176,7 +176,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -651,7 +651,7 @@
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
   <parameter name="BITS_PER_SYMBOL_IN" value="8" />
   <parameter name="BITS_PER_SYMBOL_OUT" value="8" />
-  <parameter name="COEFF_FRACTION_BITS" value="4" />
+  <parameter name="COEFF_FRACTION_BITS" value="5" />
   <parameter name="COEFF_INTEGER_BITS" value="0" />
   <parameter name="COEFF_SIGNED" value="0" />
   <parameter name="COLOR_PLANES_ARE_IN_PARALLEL" value="1" />
@@ -662,7 +662,7 @@
   <parameter name="ENABLE_WIDE_BLUR_SHARPEN" value="1" />
   <parameter name="EXTRA_PIPELINING" value="0" />
   <parameter name="FAMILY" value="MAX 10" />
-  <parameter name="FIXED_COEFF_FILE">conv_gaussian_filter_3x3.csv</parameter>
+  <parameter name="FIXED_COEFF_FILE">C:\Users\iamne\Desktop\EIE\Year2\50003_Computer_Engineering_Design_Project\EE2-Mars-Rover-Project-2021\DE10_LITE_D8M_VIP_16\conv_gaussian_filter_3x3.csv</parameter>
   <parameter name="H_SYMMETRIC" value="0" />
   <parameter name="H_TAPS" value="3" />
   <parameter name="INPUT_GUARD_BANDS_ENABLE" value="0" />
@@ -1486,13 +1486,13 @@
  <connection
    kind="avalon_streaming"
    version="16.1"
-   start="alt_vip_cl_2dfir_0.dout"
-   end="TERASIC_AUTO_FOCUS_0.din" />
+   start="alt_vip_vfb_0.dout"
+   end="alt_vip_cl_2dfir_0.din" />
  <connection
    kind="avalon_streaming"
    version="16.1"
-   start="alt_vip_vfb_0.dout"
-   end="alt_vip_cl_2dfir_0.din" />
+   start="alt_vip_cl_2dfir_0.dout"
+   end="TERASIC_AUTO_FOCUS_0.din" />
  <connection kind="clock" version="16.1" start="altpll_0.c2" end="sdram.clk" />
  <connection
    kind="clock"

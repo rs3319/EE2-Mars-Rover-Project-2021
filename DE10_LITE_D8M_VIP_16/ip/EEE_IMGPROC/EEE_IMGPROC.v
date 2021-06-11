@@ -278,7 +278,7 @@ always @(*) begin	// Write words to FIFO as state machine advances
 			msg_buf_wr <= 1'b0;				// nothing written in buffer
 		end
 		3'b001: begin
-			msg_buf_in <= {`RED_BOX_MSG_ID,5'h0,y_min_b[8:0],x_max_b_prev_pp[9:0]};
+			msg_buf_in <= {`RED_BOX_MSG_ID,5'h0,y_min_b_prev[8:0],x_max_b_prev_pp[9:0]};
 			msg_buf_wr <= 1'b1;
 		end
 		3'b010: begin
@@ -286,11 +286,11 @@ always @(*) begin	// Write words to FIFO as state machine advances
 			msg_buf_wr <= 1'b1;
 		end
 		3'b011: begin
-			msg_buf_in <= {4'h0,y_max_r[8:0],x_min_g_prev_pp[9:0],y_min_g[8:0]};
+			msg_buf_in <= {4'h0,y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]};
 			msg_buf_wr <= 1'b1;
 		end
 		3'b100: begin
-			msg_buf_in <= {3'h0,x_max_g_prev_pp[9:0],y_max_g[8:0],x_min_b_prev_pp[9:0]};
+			msg_buf_in <= {3'h0,x_max_g_prev_p[9:0],y_max_g[8:0],x_min_b_prev_pp[9:0]};
 			msg_buf_wr <= 1'b1;
 		end
 		3'b101: begin
