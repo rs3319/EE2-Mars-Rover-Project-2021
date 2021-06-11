@@ -63,7 +63,7 @@ input 	filter;
 parameter IMAGE_W = 11'd640;			// image width
 parameter IMAGE_H = 11'd480;			// image height
 parameter MESSAGE_BUF_MAX = 256;
-parameter MSG_INTERVAL = 6;
+parameter MSG_INTERVAL = 2;
 parameter BB_COL_DEFAULT = 24'h00ff00;	// bounding box default colour: green
 
 wire [7:0]   red, green, blue, grey;
