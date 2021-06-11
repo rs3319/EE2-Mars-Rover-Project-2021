@@ -41,6 +41,7 @@ String CurrentCommand = "";
 //Params (Decoded)
 int Speed;
 int prevX = 0;
+int InitialX = 0;
 int prevY = 0;
 int distTravelled;
 int PositionX = 0;
@@ -79,30 +80,45 @@ void HandleWarning(){
   int x,y;
   Serial1.println("st,0,0");
   IQueue.push_front("tl,90,0");
-  IQueue.push_front("fw,10,0");
+  IQueue.push_front("fw,20,0");
   IQueue.push_front("tr,90,0");
-  IQueue.push_front("fw,10,0");
-  
+  IQueue.push_front("fw,20,0");
+  IQueue.push_front("tr,90,0");
+  IQueue.push_front("fw,20,0");
+  IQueue.push_front("tl,90,0");
+  //Adjust for moved distance
+  int xCorrect = CurrentCommand.substring(3,CurrentCommand.indexOf(',')+1).toInt()-(PositionX-InitialX);
+  if(xCorrect > 0){
+    IQueue.push_front("fw, "+(String)abs(xCorrect) +",0");
+  }else{
+    IQueue.push_front("rv, "+(String)abs(xCorrect) +",0");
+  }
 }
 
 void processVision(unsigned int Vbuff[7]){
   int area_threshold = 0x8;
   int upper_threshold = 1;
+  int midBound = 300;
   int threshold = area_threshold;
   int ball_d = 4;
   float focal_l = 800;
-  int rover_l =  24;
+  int rover_l =  12;
   int centre_pixel = 320;
   int rw = abs((Vbuff[1] & 0x3FF)-(Vbuff[1] >> 19)); //fine
   int rh = abs((Vbuff[2] >> 19) - ((Vbuff[1] >> 10)&0x1FF)); //fine
+  int rmid = abs((Vbuff[2] >> 19) + ((Vbuff[1] >> 10)&0x1FF))/2;
   int gw = abs((Vbuff[3] >> 19)-((Vbuff[2] >> 9)& 0x3FF)); //fine
   int gh = abs(((Vbuff[3] >> 10)&0x1FF) - (Vbuff[2] & 0x1FF)); //fine
+  int gmid = abs(((Vbuff[3] >> 10)&0x1FF) - (Vbuff[2] & 0x1FF))/2;
   int bw = abs((Vbuff[0] & 0x3FF) - (Vbuff[3]&0x3FF)); //fine
   int bh = abs((Vbuff[4] >> 19) - ((Vbuff[0] >> 10)& 0x1FF)); //fine
+  int bmid = abs((Vbuff[4] >> 19) + ((Vbuff[0] >> 10)& 0x1FF));
   int yw = abs((Vbuff[5] >> 19) - ((Vbuff[4] >> 9)& 0x3FF)); //fine
   int yh = abs(((Vbuff[5] >> 10)& 0x1FF) - (Vbuff[4] & 0x1FF)); //fine
+  int ymid =  abs(((Vbuff[5] >> 10)& 0x1FF) + (Vbuff[4] & 0x1FF))/2;
   int pw = abs(((Vbuff[6] >> 9) & 0x3FF) - (Vbuff[5] & 0x3FF)); //fine
   int ph = abs((Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19)); //fine
+  int pmid = abs((Vbuff[6] & 0x1FF) + (Vbuff[6] >> 19))/2;
   
   float rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw < 400)) ? ((ball_d * focal_l / rw) ) : 0 ;
   float gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw < 400) ) ? ((ball_d * focal_l / gw) ) : 0;
@@ -128,7 +144,7 @@ void processVision(unsigned int Vbuff[7]){
   */
   int ppx,ppy; 
   float perp,pix,theta,psi,dx,dy,r;
-  if(rdist > threshold){
+  if(rdist > threshold && rmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = rdist;
     pix = rpix; 
@@ -147,7 +163,7 @@ void processVision(unsigned int Vbuff[7]){
     if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
     http.end();
   }
-  if(gdist > threshold){
+  if(gdist > threshold && gmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = gdist;
     pix = gpix;
@@ -166,7 +182,7 @@ void processVision(unsigned int Vbuff[7]){
     if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
     http.end();
   }
-  if(bdist > threshold){
+  if(bdist > threshold && bmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = bdist;
     pix = bpix;
@@ -185,7 +201,7 @@ void processVision(unsigned int Vbuff[7]){
     if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
     http.end();
   }
-  if(ydist > threshold){
+  if(ydist > threshold && ymid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = ydist;
     pix = ypix;
@@ -204,7 +220,7 @@ void processVision(unsigned int Vbuff[7]){
     if(httpResponseCode<=0){Serial.print("HTTP ERROR Code: ");Serial.print(httpResponseCode);}
     http.end();
   }
-  if(pdist > threshold){
+  if(pdist > threshold && pmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = pdist;
     pix = ppix;
@@ -227,7 +243,10 @@ void processVision(unsigned int Vbuff[7]){
 
 void loop() {
 //Recieve Energy status
-EnergyStatus -= (float)random(300)/1000;
+EnergyStatus -= (float)random(300)/2000;
+if(EnergyStatus < 0){
+  EnergyStatus = 0;
+}
 /*
 PositionX += 10;
 PositionY += 5;
@@ -315,6 +334,7 @@ if(WiFi.status() == WL_CONNECTED){
    */
    if(!Drivebusy){
     Serial.println("Drive Not busy");
+    InitialX = PositionX;
     if(IQueue.size() > 0){
       Serial.println("IQUEUE");
       Serial.println(IQueue.front());
