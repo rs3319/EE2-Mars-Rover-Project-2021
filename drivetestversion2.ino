@@ -570,7 +570,7 @@ Serial.println("Distance_y = " + String(total_y));
    
    Serial.println("posx="+String(posx));
    Serial.println("posy="+String(posy));
-   String towrite = String(posx) + "," + String(posy) + "," + 0 + "," + String(overallang);
+   String towrite = String(int(posx)) + "," + String(int(posy)) + "," + 0 + "," + String(int(overallang)) + "\n";
    
    
    if(ey>0 && forward)   {      
@@ -584,15 +584,15 @@ Serial.println("Distance_y = " + String(total_y));
    }else if(ey <= 0 && forward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
-    Serial1.println(towrite);
-    Serial1.println("done");
+    Serial1.write(towrite.c_str());
+    Serial1.write("done\n");
     forward = 0;
    }
 
    
 
     if(ear<0 && right){
-    speedmodulate("slow");
+    speedmodulate("medium");
     DIRRstate = LOW;
     DIRLstate = LOW;
     digitalWrite(DIRR, DIRRstate);
@@ -602,8 +602,8 @@ Serial.println("Distance_y = " + String(total_y));
     }else if(ear>=0 && right){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
-      Serial1.println(towrite);
-      Serial1.println("done");
+      Serial1.write(towrite.c_str());
+      Serial1.write("done\n");
       right = 0;
     }
     
@@ -619,13 +619,13 @@ Serial.println("Distance_y = " + String(total_y));
   }else if(ey >= 0 && backward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
-    Serial1.println(towrite);
-    Serial1.println("done");
+    Serial1.write(towrite.c_str());
+    Serial1.write("done\n");
     backward = 0;
   }
  
     if(eal>0 && left){
-    speedmodulate("slow");
+    speedmodulate("medium");
     DIRRstate = HIGH;
     DIRLstate = HIGH;
     digitalWrite(DIRR, DIRRstate);
@@ -635,8 +635,8 @@ Serial.println("Distance_y = " + String(total_y));
     }else if(eal<=0 && left){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
-      Serial1.println(towrite);
-      Serial1.println("done");
+      Serial1.write(towrite.c_str());
+      Serial1.write("done\n");
       left = 0;
     }
 
