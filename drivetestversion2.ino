@@ -86,7 +86,7 @@ float overallang = 0;
 float expang = 0;
 float recordx = 0;
 float posx=0,posy=0;
-
+int reqturn = 0;
 
 unsigned int loopTrigger;
 unsigned int com_count=0;   // a variables to count the interrupts. Used for program debugging.
@@ -450,6 +450,7 @@ Serial.println("Distance_y = " + String(total_y));
         backward = 0;
         right = 0;
         left = 0;
+        yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
         tary = tary + expy;
@@ -471,6 +472,7 @@ Serial.println("Distance_y = " + String(total_y));
         forward = 0;
         backward = 0;
         left = 0;
+        yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expang = dista.toFloat();
         overallang = overallang + expang;
@@ -483,6 +485,7 @@ Serial.println("Distance_y = " + String(total_y));
         forward = 0;
         backward = 0;
         right = 0;
+        yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expang = dista.toFloat();
         overallang = overallang - expang;
@@ -494,6 +497,7 @@ Serial.println("Distance_y = " + String(total_y));
         forward = 0;
         right = 0;
         left = 0;
+        yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
         tary = tary - expy;
@@ -510,7 +514,8 @@ Serial.println("Distance_y = " + String(total_y));
       }
 
       if(command.substring(0,2)=="yw"){
-        int reqturn = overallang/90;
+        reqturn = overallang/90;
+        overallang = 0;
         if(reqturn<0){
           right = 1;
           forward = 0;
@@ -528,6 +533,10 @@ Serial.println("Distance_y = " + String(total_y));
           right = 0;
         }
       }
+
+      if(command.substring(0,2)=="st"){
+        standby = 1;
+      }
      
 
    command = "";
@@ -535,20 +544,32 @@ Serial.println("Distance_y = " + String(total_y));
   }
          
    ey = tary-total_y;
-   if(right){
-   ear = (recordx-18) - total_x;
-   }else if(left){
-   eal = (recordx+18) - total_x;
+   if(yaw==0){
+     if(right){
+        ear = (recordx-18) - total_x;
+     }else if(left){
+        eal = (recordx+18) - total_x;
+     }
    }
-          /*Serial.println("errorR = "+String(ear));
+
+   if(yaw){
+    if(reqturn==1){
+        eal = (recordx+18) - total_x;
+    }else if(reqturn==-1){
+        ear = (recordx-18) - total_x;
+    }else if(reqturn==2 || reqturn==-2){
+      ear = (recordx-36) - total_x;
+    }
+   }
+          Serial.println("errorR = "+String(ear));
           Serial.println("errorL = "+String(eal));
-          Serial.print(ey);
+          Serial.println("errorY = "+String(ey));
           Serial.println("target distance = " + String(tary));
-          Serial.println("current angle = "+ String(overallang));*/
+          Serial.println("current angle = "+ String(overallang));
 
    
-   //Serial.println("posx="+String(posx));
-   //Serial.println("posy="+String(posy));
+   Serial.println("posx="+String(posx));
+   Serial.println("posy="+String(posy));
    String towrite = String(posx) + "," + String(posy) + "," + 0 + "," + String(overallang);
    
    
@@ -771,6 +792,11 @@ void speedmodulate(String speedcontrolvar){
   }else if(speedcontrolvar=="medium"){
     analogWrite(6,120);
   }
+}
+
+void stopmoveing(){
+  digitalWrite(pwmr,LOW);
+  digitalWrite(pwml,LOW);
 }
 
 /*end of the program.*/
