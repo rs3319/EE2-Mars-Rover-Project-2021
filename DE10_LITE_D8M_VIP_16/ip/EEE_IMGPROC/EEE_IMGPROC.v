@@ -68,7 +68,7 @@ parameter BB_COL_DEFAULT = 24'h00ff00;	// bounding box default colour: green
 
 wire [7:0]   red, green, blue, grey;
 wire [7:0]   red_out, green_out, blue_out;
-wire         sop, eop, in_valid, out_ready;
+wire         sop, eop, in_valid, out_ready, upper;
 
 // RGB -> HSV colour space conversion
 // 8 bit HSV ranges as follows:
@@ -84,7 +84,6 @@ assign hue_inter = (delta == 0) ? 0 : (cmax == red) ? (green - blue)*60/delta
 		   					  : 240 + (red - green)*60/delta;
 assign hue = (hue_inter < 0) ? hue_inter+360 : hue_inter;
 assign value = cmax;
-
 
 // Detect red, green, blue, yellow, pink and white areas
 // https://alloyui.com/examples/color-picker/hsv.html
@@ -145,6 +144,8 @@ always @(posedge clk) begin
 	end
 end
 
+assign upper = (y < 240 & x < 30 & x > 610) ? 1 : 0;
+
 // Find first and last r,g,b,y,p pixels
 reg [10:0] x_min_r, y_min_r, x_max_r, y_max_r, x_min_r_prev, x_max_r_prev;
 reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp;
@@ -152,31 +153,31 @@ reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min
 reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p, x_min_p_prev, x_max_p_prev;
 always @(posedge clk) begin
-	if (red_detect & in_valid) begin	// Update bounds when the pixel is red
+	if (red_detect & in_valid & !upper) begin	// Update bounds when the pixel is red
 		if (x < x_min_r) x_min_r <= x; if (x < x_min_r_prev & x > x_min_r) x_min_r_prev <= x;
 		if (x > x_max_r) x_max_r <= x; if (x > x_max_r_prev & x < x_max_r) x_max_r_prev <= x;
 		if (y < y_min_r) y_min_r <= y; 
 		if (y > y_max_r) y_max_r <= y;
 	end
-	if (green_detect & in_valid) begin	// green
+	if (green_detect & in_valid & !upper) begin	// green
 		if (x < x_min_g) x_min_g <= x; if (x < x_min_g_prev & x > x_min_g) x_min_g_prev <= x; if (x < x_min_g_prev_p & x > x_min_g_prev) x_min_g_prev_p <= x; if (x < x_min_g_prev_pp & x > x_min_g_prev_p) x_min_g_prev_pp <= x;
 		if (x > x_max_g) x_max_g <= x; if (x > x_max_g_prev & x < x_max_g) x_max_g_prev <= x; if (x > x_max_g_prev_p & x < x_max_g_prev) x_max_g_prev_p <= x; if (x > x_max_g_prev_pp & x < x_max_g_prev_p) x_max_g_prev_pp <= x;
 		if (y < y_min_g) y_min_g <= y; 
 		if (y > y_max_g) y_max_g <= y; 
 	end
-	if (blue_detect & in_valid) begin	// blue
+	if (blue_detect & in_valid & !upper) begin	// blue
 		if (x < x_min_b) x_min_b <= x; if (x < x_min_b_prev & x > x_min_b) x_min_b_prev <= x; if (x < x_min_b_prev_p & x > x_min_b_prev) x_min_b_prev_p <= x; if (x < x_min_b_prev_pp & x > x_min_b_prev_p) x_min_b_prev_pp <= x;
 		if (x > x_max_b) x_max_b <= x; if (x > x_max_b_prev & x < x_max_b) x_max_b_prev <= x; if (x > x_max_b_prev_p & x < x_max_b_prev) x_max_b_prev_p <= x; if (x > x_max_b_prev_pp & x < x_max_b_prev_p) x_max_b_prev_pp <= x;
 		if (y < y_min_b) y_min_b <= y; if (y < y_min_b_prev & y > y_min_b) y_min_b_prev <= y;
 		if (y > y_max_b) y_max_b <= y;
 	end
-	if (yellow_detect & in_valid) begin	// yellow
+	if (yellow_detect & in_valid & !upper) begin	// yellow
 		if (x < x_min_y) x_min_y <= x; 
 		if (x > x_max_y) x_max_y <= x; 
 		if (y < y_min_y) y_min_y <= y;
 		if (y > y_max_y) y_max_y <= y;
 	end
-	if (pink_detect & in_valid) begin	// pink
+	if (pink_detect & in_valid & !upper) begin	// pink
 		if (x < x_min_p) x_min_p <= x; if (x < x_min_p_prev & x > x_min_p) x_min_p_prev <= x;
 		if (x > x_max_p) x_max_p <= x; if (x > x_max_p_prev & x < x_max_p) x_max_p_prev <= x;
 		if (y < y_min_p) y_min_p <= y;
