@@ -18,18 +18,20 @@
     </head>
     <body>
     
-        <h1 class ="text-center" align="center" style="color:yellow;">ESP32 Mars Rover Dashboard</h1> <br>
+        <h1 class ="text-center" align="center" style="color:yellow;">Mars Rover Dashboard</h1> <br>
 
         <section class="main">
         
-    <h2 class="text-center" align="center" id = "GraphText">Rover Position</h2>
+    
     <style>
         .chart_box {
         display: inline-block;
         margin: 0 auto;
     }
     </style>
-    <table align="center"><tr><td><div id="regions_div" class = "chart_box"  style="width: 600px; height: 350px;"></div></td>
+    <table align="center">
+     <tr><td><h2 class="text-center" align="center" id = "GraphText">Rover Position</h2></td><td><h2 class="text-center" align="center" id = "BatteryLifeChart">Battery Life Chart</h2></td></tr>  
+        <tr><td><div id="regions_div" class = "chart_box"  style="width: 600px; height: 350px;"></div></td>
     <td><div id="energy_div" class = "chart_box"  style="width: 600px; height: 350px;"></div></td></tr></table>
     
     
@@ -49,14 +51,14 @@
                 // Loop through each data and populate the array.
                 $.each(data, function (index, value) {
 
-                    arr.push([new Date(Date.parse(value.reading_time)),parseInt(value.BatteryLevel)]);
+                    arr.push([new Date(Date.parse(value.reading_time)),parseFloat(value.BatteryLevel)]);
                 });
         var data = google.visualization.arrayToDataTable(arr);
 
 
         var chart = new google.visualization.LineChart(document.getElementById('energy_div'));
-
-        chart.draw(data);
+        var options = {vAxis: {title: 'Battery %', viewWindow: {min: 0, max: 100} }, hAxis:{title: 'Time (UTC)'}};
+        chart.draw(data,options);
             }
         
             
@@ -78,7 +80,7 @@
                 });
         var data = google.visualization.arrayToDataTable(arr);
 
-        var options = {vAxis: {viewWindow: {min: -100, max: 100}},hAxis: {viewWindow: {min: -100, max: 100}}, legend:'none'};
+        var options = {vAxis: {title: 'Y Position', viewWindow: {min: -50, max: 50}},hAxis: {title: 'X Position',viewWindow: {min: -50, max: 50}}, legend:'none'};
         var chart = new google.visualization.LineChart(document.getElementById('regions_div'));
 
         chart.draw(data, options);
@@ -98,7 +100,7 @@
                     
                 });
         var data = google.visualization.arrayToDataTable(arr);
-        var options = {vAxis: {viewWindow: {min: -100, max: 100}},hAxis: {viewWindow: {min: -100, max: 100}}, legend: {position: 'none'},explorer: {
+        var options = {vAxis: {title: 'Y Position',viewWindow: {min: -50, max: 50}},hAxis: {title: 'X Position',viewWindow: {min: -100, max: 100}}, legend: {position: 'none'},explorer: {
             keepInBounds: true,
             maxZoomIn: 4.0
           }
@@ -149,12 +151,17 @@
           <span class="dht-labels">Speed</span> 
           <span id="speedvalue">%SPEED%</span>
         </p> 
-        </td><td align="center"><button id="toggle-stream">Start</button><button onclick="Toggle()" type="button">
+        <p align = "left">
+          <i class="far fa-compass" style="color:#059e8a;"></i> 
+          <span class="dht-labels">Yaw</span> 
+          <span id="yawvalue">%YAW%</span>
+        </p>
+        </td><td align="center"><button id="Clear">Reset</button><button onclick="Toggle()" type="button">
          Toggle Map</button></td><td></td><td></td><td></td><td align="left"><p align = "left">
           <i class="fas fa-lightbulb" style="color:#059e8a;"></i> 
           <span class="dht-labels">Energy</span> 
           <span id="energyvalue">%ENERGY%</span>
-        </p></td><td></td></tr>
+        </p></td></tr>
                   <tr><td></td><td align="center"><button class="button button2" id="forward" >Forward by 10</button></td><td></td></tr>
                   <tr><td align="center"><button class="button button2" id="turnleft" >Turn Left by 90</button></td><td align="center"></td><td align="center"><button class="button button2" id="turnright" >Turn Right by 90</button></td></tr>
                   <tr><td></td><td align="center"><button class="button button2" id="backward" >Backward by 10</button></td><td></td></tr>
@@ -193,9 +200,11 @@
           document.getElementById("turnright").onclick = DriveRight;
           document.getElementById("backward").onclick = DriveReverse;
           document.getElementById("ManualMove").onclick = ManualMove;
+          document.getElementById("Clear").onclick = ClearCommands;
           setInterval(function(){
             $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "energy"},function(data,status){document.getElementById("energyvalue").innerHTML = data})
             $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "position"},function(data,status){document.getElementById("positionvalue").innerHTML = data})
+            $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "yaw"},function(data,status){document.getElementById("yawvalue").innerHTML = data})
             $.get("sql-query-latest.php",{api_key: "EXAMPLEKEY2000",database : "speed"},function(data,status){document.getElementById("speedvalue").innerHTML = data})
             
             MapSelector(mapMode);
@@ -217,6 +226,9 @@
           }
           function DriveReverse(){
             $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "rv", param1: 10, param2: 0})
+          }
+          function ClearCommands(){
+            $.post("esp-post-command.php",{api_key: "EXAMPLEKEY2000",name : "clear", param1: 0, param2: 0}) 
           }
           function ManualMove(){
  
