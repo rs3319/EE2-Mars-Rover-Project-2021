@@ -16,12 +16,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 			echo "dead";
 			die("Connection failed: " . $conn->connect_error);
         } 
+        if($command == "clear"){
+        $sql = "Delete from ESP32Commands";
+        if ($conn->query($sql) === TRUE) {
+            echo "Deleted all commands";
+        } 
+        else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+        $sql = "Delete from ESP32DriveReadings";
+        if ($conn->query($sql) === TRUE) {
+            echo "Deleted all drive readings";
+        } 
+        $sql = "Delete from ESP32PingPong";
+        if ($conn->query($sql) === TRUE) {
+            echo "Deleted all vision readings";
+        } 
+        else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+        }else{
         $sql = "INSERT INTO ESP32Commands (Command,param1,param2) VALUES ('" . $command . "','" . $param1 . "','" . $param2 . "')";
         if ($conn->query($sql) === TRUE) {
             echo "New Command record created successfully";
         } 
         else {
             echo "Error: " . $sql . "<br>" . $conn->error;
+        }
         }
         $conn->close();
 }
