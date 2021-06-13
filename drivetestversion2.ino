@@ -87,6 +87,8 @@ float expang = 0;
 float recordx = 0;
 float posx=0,posy=0;
 int reqturn = 0;
+unsigned long starttime = 0, endtime = 0;
+float roverspeed;
 
 unsigned int loopTrigger;
 unsigned int com_count=0;   // a variables to count the interrupts. Used for program debugging.
@@ -437,9 +439,9 @@ Serial.println("Distance_y = " + String(total_y));
           pwm_modulate(closed_loop); //pwm modulation
 
           
-  while(Serial1.available()!=0) {
+  while(Serial.available()!=0) {
     
-    command = Serial1.readString();
+    command = Serial.readString();
     fcomma = command.indexOf(',');
     scomma = command.indexOf(',', fcomma+1);
     
@@ -453,7 +455,9 @@ Serial.println("Distance_y = " + String(total_y));
         yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
-        tary = tary + expy;
+        float recordy = total_y;
+        tary = recordy + expy;
+        starttime = millis();
         
         if(overallang==0){
             posy = posy + expy;
@@ -500,7 +504,9 @@ Serial.println("Distance_y = " + String(total_y));
         yaw = 0;
         dista = command.substring(fcomma+1,scomma);
         expy = dista.toFloat();
-        tary = tary - expy;
+        float recordy = total_y;
+        tary = recordy - expy;
+        starttime = millis();
 
         if(overallang==0){
             posy = posy - expy;
@@ -521,11 +527,13 @@ Serial.println("Distance_y = " + String(total_y));
           forward = 0;
           backward = 0;
           left = 0;
+          recordx = total_x;
         }else if(reqturn>0){
           left = 1;
           forward = 0;
           backward = 0;
           right = 0;
+          recordx = total_x;
         }else if(reqturn==0){
           left = 0;
           forward = 0;
@@ -546,19 +554,19 @@ Serial.println("Distance_y = " + String(total_y));
    ey = tary-total_y;
    if(yaw==0){
      if(right){
-        ear = (recordx-18) - total_x;
+        ear = (recordx-16.5) - total_x;
      }else if(left){
-        eal = (recordx+18) - total_x;
+        eal = (recordx+16.5) - total_x;
      }
    }
 
    if(yaw){
     if(reqturn==1){
-        eal = (recordx+18) - total_x;
+        eal = (recordx+16.5) - total_x;
     }else if(reqturn==-1){
-        ear = (recordx-18) - total_x;
+        ear = (recordx-16.5) - total_x;
     }else if(reqturn==2 || reqturn==-2){
-      ear = (recordx-36) - total_x;
+      ear = (recordx-33) - total_x;
     }
    }
           Serial.println("errorR = "+String(ear));
@@ -570,11 +578,11 @@ Serial.println("Distance_y = " + String(total_y));
    
    Serial.println("posx="+String(posx));
    Serial.println("posy="+String(posy));
-   String towrite = String(int(posx)) + "," + String(int(posy)) + "," + 0 + "," + String(int(overallang)) + "\n";
+   String towrite = String(int(posx)) + "," + String(int(posy)) + "," + String(roverspeed) + "," + String(int(overallang)) + "\n";
    
    
    if(ey>0 && forward)   {      
-
+    speedmodulate("slow");
     DIRRstate = HIGH;
     DIRLstate = LOW;
     digitalWrite(DIRR, DIRRstate);
@@ -584,15 +592,17 @@ Serial.println("Distance_y = " + String(total_y));
    }else if(ey <= 0 && forward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
+    forward = 0;
+    endtime = millis();
+    roverspeed = speedcalculation(starttime,endtime);
     Serial1.write(towrite.c_str());
     Serial1.write("done\n");
-    forward = 0;
    }
 
    
 
     if(ear<0 && right){
-    speedmodulate("medium");
+    speedmodulate("slowturn");
     DIRRstate = LOW;
     DIRLstate = LOW;
     digitalWrite(DIRR, DIRRstate);
@@ -602,14 +612,16 @@ Serial.println("Distance_y = " + String(total_y));
     }else if(ear>=0 && right){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
+      right = 0;
+      roverspeed = 0;
       Serial1.write(towrite.c_str());
       Serial1.write("done\n");
-      right = 0;
     }
     
 
 
   if (ey<0 && backward) {
+    speedmodulate("slow");
     DIRRstate = LOW;
     DIRLstate = HIGH;
     digitalWrite(DIRR, DIRRstate);
@@ -619,13 +631,15 @@ Serial.println("Distance_y = " + String(total_y));
   }else if(ey >= 0 && backward){
     digitalWrite(pwmr,LOW);
     digitalWrite(pwml,LOW);
+    backward = 0;
+    endtime = millis();
+    roverspeed = speedcalculation(starttime,endtime);
     Serial1.write(towrite.c_str());
     Serial1.write("done\n");
-    backward = 0;
   }
  
     if(eal>0 && left){
-    speedmodulate("medium");
+    speedmodulate("slowturn");
     DIRRstate = HIGH;
     DIRLstate = HIGH;
     digitalWrite(DIRR, DIRRstate);
@@ -635,25 +649,20 @@ Serial.println("Distance_y = " + String(total_y));
     }else if(eal<=0 && left){
       digitalWrite(pwmr,LOW);
       digitalWrite(pwml,LOW);
+      left = 0;
+      roverspeed = 0;
       Serial1.write(towrite.c_str());
       Serial1.write("done\n");
-      left = 0;
     }
 
-    /*if(yaw){
-      for(int i=0;i<reqturn;i++){
-        
-      }
-    }*/
 
 
   if (standby) {
     digitalWrite(pwmr, LOW);
-    digitalWrite(pwml, LOW);
-    
+    digitalWrite(pwml, LOW);  
   }
 
-    
+    Serial.println(towrite);
     
       }else{ // Open Loop Buck
           current_limit = 3; // Buck has a higher current limit
@@ -789,6 +798,8 @@ float pidi(float pid_input){
 void speedmodulate(String speedcontrolvar){
   if(speedcontrolvar=="slow"){
     analogWrite(6,190);
+  }else if(speedcontrolvar=="slowturn"){
+    analogWrite(6,235);
   }else if(speedcontrolvar=="medium"){
     analogWrite(6,120);
   }
@@ -799,4 +810,8 @@ void stopmoveing(){
   digitalWrite(pwml,LOW);
 }
 
+float speedcalculation(unsigned long t1, unsigned long t2){
+  roverspeed = abs(expy)/((t2-t1)/10000);
+  return roverspeed;
+}
 /*end of the program.*/
