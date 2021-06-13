@@ -19,7 +19,7 @@ hello,
         returns the average x,y coordinates of each obstacle grouped by color.  
 
 6. esp32-get-position-array.php:  
-        PHP Script called by the front end when rendering the rover path. Returns all the received coordinates of the rover accross its life-cycle  
+        PHP Script called by the front end when rendering the rover path. Returns all the received coordinates of the rover across its life-cycle  
 
 7. index.php:  
         The main front-end user interface.   
