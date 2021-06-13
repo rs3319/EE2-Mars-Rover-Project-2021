@@ -809,7 +809,7 @@ void stopmoveing(){
 }
 
 float speedcalculation(unsigned long t1, unsigned long t2){
-  roverspeed = abs(expy)/((t2-t1)/10000);
+  roverspeed = abs(expy)/float(((t2-t1)/10000));
   return roverspeed;
 }
 /*end of the program.*/
