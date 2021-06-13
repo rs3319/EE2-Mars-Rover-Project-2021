@@ -31,6 +31,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
         $row = $result->fetch_assoc();
         echo $row["Speed"];    
             
+        }else if(test_input($_GET["database"]) == "yaw"){
+        $sql = "SELECT Yaw from ESP32DriveReadings WHERE id=(SELECT max(id) FROM ESP32DriveReadings)";
+        $result = $conn->query($sql);
+        $row = $result->fetch_assoc();
+        echo $row["Yaw"];    
+            
         }else if (test_input($_GET["database"]) == "commands"){
         $sql = "SELECT id,command,param1,param2 from ESP32Commands WHERE command_timestamp=(SELECT min(command_timestamp) FROM ESP32Commands)";
         $result = $conn->query($sql);
