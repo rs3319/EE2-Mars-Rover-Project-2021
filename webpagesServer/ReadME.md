@@ -15,7 +15,7 @@ hello,
         PHP Script called by the front end when visualizing the battery life chart. Queries the 50 latest energy readings.  
 
 5. esp32-get-ping-pong.php:  
-        PHP Script called by the front end when rendering the terrain map of obstacles. Queries the latest 5 readings of each obstacle. color and  
+        PHP Script called by the front end when rendering the terrain map of obstacles. Queries the latest 5 readings of each obstacle and  
         returns the average x,y coordinates of each obstacle grouped by color.  
 
 6. esp32-get-position-array.php:  
