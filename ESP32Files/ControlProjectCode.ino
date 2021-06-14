@@ -25,13 +25,13 @@ int VisionTX = 18;
 int DriveRX = 16; 
 int DriveTX = 17;
 bool mv = false;
-
+bool Warning = false;
 //Connect to internet
 const char *ssid = "";
 const char *password = "";
 //AsyncWebServer server(81);
 bool Drivebusy = false;
-
+bool PathFinding = false;
 //Params (RAW)
 float EnergyStatus = 100;
 std::string VisionStatus;
@@ -49,6 +49,7 @@ int PositionY = 0;
 int yaw;
 int ObjectX;
 int ObjectY;
+bool Turning = false;
 
 //HTTP Params
 const char* serverName = "http://esp32-mars-rover.000webhostapp.com/esp-log-data.php";
@@ -147,6 +148,9 @@ void processVision(unsigned int Vbuff[7]){
   if(rdist > threshold && rmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = rdist;
+    if(perp<10){
+      Warning = true;
+    }
     pix = rpix; 
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
@@ -166,6 +170,9 @@ void processVision(unsigned int Vbuff[7]){
   if(gdist > threshold && gmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = gdist;
+    if(perp<10){
+      Warning = true;
+    }
     pix = gpix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
@@ -185,6 +192,9 @@ void processVision(unsigned int Vbuff[7]){
   if(bdist > threshold && bmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = bdist;
+    if(perp<10){
+      Warning = true;
+    }
     pix = bpix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
@@ -204,6 +214,9 @@ void processVision(unsigned int Vbuff[7]){
   if(ydist > threshold && ymid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = ydist;
+    if(perp<10){
+      Warning = true;
+    }
     pix = ypix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
@@ -223,6 +236,9 @@ void processVision(unsigned int Vbuff[7]){
   if(pdist > threshold && pmid <= midBound){
     // do dist and pix calculation to get ppx and ppy;
     perp = pdist;
+    if(perp<10){
+      Warning = true;
+    }
     pix = ppix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
@@ -242,7 +258,19 @@ void processVision(unsigned int Vbuff[7]){
 }
 
 void loop() {
+//Timing 
+//int start = millis();
 //Recieve Energy status
+/* EnergyBusNumber = 8; //This Value requires to be confirmed through testing with the energy subsystem physically connected to the ESP32
+  Wire.requestFrom(EnergyBusNumber, 4); // Request 4 bytes : 32 bit int from Energy module   
+  i = 0;
+  EnergyStatus = 0;
+  while (Wire.available()) {
+    char c = Wire.read(); 
+    EnergyStatus |= c << (i*8);// form 32 bit int from the 4 bytes
+    i++;
+  }
+ */
 EnergyStatus -= (float)random(300)/2000;
 if(EnergyStatus < 0){
   EnergyStatus = 0;
@@ -261,6 +289,9 @@ if(Serial1.available()){
   Serial.printf("Received: %s \n",DriveStatus);
   if(DriveStatus == "done"){
     Drivebusy = false;
+    if(Turning){
+      Turning = false;
+    }
   }else{
   prevX = PositionX;
   prevY = PositionY;
@@ -271,7 +302,7 @@ if(Serial1.available()){
 }
 
 //Recieve location of ping pong ball (if found on camera) and send to database
-if(Serial2.available()){
+if(Serial2.available() && !Turning){
  char *byteBuff;
  String VStatus;
  VStatus = Serial2.readStringUntil('\n');
@@ -292,7 +323,11 @@ if(Serial2.available()){
   processVision(Vbuff);
  }
 }
-
+//Pathfinding (Obstacle avoidance)
+if(Warning && PathFinding){
+  HandleWarning();
+  Warning = false;
+}
 //Dummy pingpong balls
 
   /*
@@ -392,6 +427,9 @@ if(WiFi.status() == WL_CONNECTED){
                 }
                }
            }else{
+            if((CurrentCommand.substring(0,2)=="tl") || (CurrentCommand.substring(0,2)=="tr")){
+              Turning = true;
+            }
             Serial1.println(CurrentCommand);
             Drivebusy = true;
            }
@@ -401,5 +439,8 @@ if(WiFi.status() == WL_CONNECTED){
    }
    }
 }
+//int stopt = millis();
+//String Timing = "Loop time: " + String(stopt-start);
+Serial.print(Timing);
 delay(1000);
 }
