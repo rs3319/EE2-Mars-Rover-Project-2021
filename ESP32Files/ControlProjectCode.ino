@@ -441,6 +441,6 @@ if(WiFi.status() == WL_CONNECTED){
 }
 //int stopt = millis();
 //String Timing = "Loop time: " + String(stopt-start);
-Serial.print(Timing);
+//Serial.print(Timing);
 delay(1000);
 }
