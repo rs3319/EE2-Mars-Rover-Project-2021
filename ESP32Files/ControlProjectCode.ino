@@ -9,8 +9,8 @@
 #include <deque>
 //Initialize pins for communucation with drive, vision and energy
 /*Pin Info:
- * IO16 - Arduino D9 Drive RX
- * IO17 - Arduino D8 Drive TX
+ * IO16 - Arduino D9 Drive RX Connect to TX of Arduino 
+ * IO17 - Arduino D8 Drive TX Connect to RX of Arduino
  * IO19 - Arduino D5 Vision RX
  * 1018 - Arduino D6 Vision TX
  * IO21 - SDA Energy I2C Data
@@ -31,7 +31,7 @@ const char *ssid = "";
 const char *password = "";
 //AsyncWebServer server(81);
 bool Drivebusy = false;
-bool PathFinding = false;
+
 //Params (RAW)
 float EnergyStatus = 100;
 std::string VisionStatus;
@@ -50,7 +50,7 @@ int yaw;
 int ObjectX;
 int ObjectY;
 bool Turning = false;
-
+bool Pathfinding = false;
 //HTTP Params
 const char* serverName = "http://esp32-mars-rover.000webhostapp.com/esp-log-data.php";
 const char* PPScript = "http://esp32-mars-rover.000webhostapp.com/esp-log-PP.php";
@@ -154,11 +154,11 @@ void processVision(unsigned int Vbuff[7]){
     pix = rpix; 
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
-    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
-    psi = theta + yaw;
+    theta = atan2(dx,dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw*M_PI/180;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi) + rover_l; 
+    ppy = PositionY + (r+ rover_l)*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -176,11 +176,11 @@ void processVision(unsigned int Vbuff[7]){
     pix = gpix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
-    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
-    psi = theta + yaw;
+    theta = atan2(dx,dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw*M_PI/180;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi) + rover_l;
+    ppy = PositionY + (r+ rover_l)*cos(psi);
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -198,11 +198,11 @@ void processVision(unsigned int Vbuff[7]){
     pix = bpix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
-    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
-    psi = theta + yaw;
+    theta = atan2(dx,dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw*M_PI/180;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-   ppy = PositionY + r*cos(psi) + rover_l; 
+   ppy = PositionY + (r+ rover_l)*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -220,11 +220,11 @@ void processVision(unsigned int Vbuff[7]){
     pix = ypix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
-    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
-    psi = theta + yaw;
+    theta = atan2(dx,dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw*M_PI/180;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi) + rover_l;
+    ppy = PositionY + (r+ rover_l)*cos(psi);
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -242,11 +242,11 @@ void processVision(unsigned int Vbuff[7]){
     pix = ppix;
     dx = ((pix-320)/320 * perp / 2); // uses the approximation that the ratio of perp:focal width is 1:1
     dy = perp;
-    theta = atan(dx/dy); // we might have to check if we need atan or atan2 (consider quadrants?)
-    psi = theta + yaw;
+    theta = atan2(dx,dy); // we might have to check if we need atan or atan2 (consider quadrants?)
+    psi = theta + yaw*M_PI/180;
     r = sqrt(pow(dx,2)+pow(dy,2));
     ppx = PositionX + r*sin(psi);
-    ppy = PositionY + r*cos(psi) + rover_l; 
+    ppy = PositionY + (r+ rover_l)*cos(psi); 
     HTTPClient http;
     http.begin(PPScript);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -324,7 +324,8 @@ if(Serial2.available() && !Turning){
  }
 }
 //Pathfinding (Obstacle avoidance)
-if(Warning && PathFinding){
+if(Warning && Pathfinding){
+  Serial.println("Obstacle Detected! Pathfinding automatically.");
   HandleWarning();
   Warning = false;
 }
