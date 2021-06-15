@@ -144,11 +144,11 @@ always @(posedge clk) begin
 	end
 end
 
-assign upper = (y < 240 & x < 30 & x > 610) ? 1 : 0;
+assign upper = (y < 240) ? 1 : 0;
 
 // Find first and last r,g,b,y,p pixels
 reg [10:0] x_min_r, y_min_r, x_max_r, y_max_r, x_min_r_prev, x_max_r_prev;
-reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp;
+reg [10:0] x_min_g, y_min_g, x_max_g, y_max_g, x_min_g_prev, x_max_g_prev, x_min_g_prev_p, x_max_g_prev_p, x_min_g_prev_pp, x_max_g_prev_pp, y_min_g_prev;
 reg [10:0] x_min_b, y_min_b, x_max_b, y_max_b, x_min_b_prev, x_max_b_prev, x_min_b_prev_p, x_max_b_prev_p, x_min_b_prev_pp, x_max_b_prev_pp, y_min_b_prev;
 reg [10:0] x_min_y, y_min_y, x_max_y, y_max_y;
 reg [10:0] x_min_p, y_min_p, x_max_p, y_max_p, x_min_p_prev, x_max_p_prev;
@@ -162,7 +162,7 @@ always @(posedge clk) begin
 	if (green_detect & in_valid & !upper) begin	// green
 		if (x < x_min_g) x_min_g <= x; if (x < x_min_g_prev & x > x_min_g) x_min_g_prev <= x; if (x < x_min_g_prev_p & x > x_min_g_prev) x_min_g_prev_p <= x; if (x < x_min_g_prev_pp & x > x_min_g_prev_p) x_min_g_prev_pp <= x;
 		if (x > x_max_g) x_max_g <= x; if (x > x_max_g_prev & x < x_max_g) x_max_g_prev <= x; if (x > x_max_g_prev_p & x < x_max_g_prev) x_max_g_prev_p <= x; if (x > x_max_g_prev_pp & x < x_max_g_prev_p) x_max_g_prev_pp <= x;
-		if (y < y_min_g) y_min_g <= y; 
+		if (y < y_min_g) y_min_g <= y; if (y < y_min_g_prev & y > y_min_g) y_min_g_prev <= y;
 		if (y > y_max_g) y_max_g <= y; 
 	end
 	if (blue_detect & in_valid & !upper) begin	// blue
@@ -194,6 +194,7 @@ always @(posedge clk) begin
 		x_min_g_prev <= IMAGE_W-11'h1; x_max_g_prev <= 0;
 		x_min_g_prev_p <= IMAGE_W-11'h1; x_max_g_prev_p <= 0;
 		x_min_g_prev_pp <= IMAGE_W-11'h1; x_max_g_prev_pp <= 0;
+		y_min_g_prev <= IMAGE_W-11'h1;
 		// blue
 		x_min_b <= IMAGE_W-11'h1; x_max_b <= 0;
 		y_min_b <= IMAGE_H-11'h1; y_max_b <= 0;
@@ -230,7 +231,7 @@ always@(posedge clk) begin
 		// green
 		left_g <= x_min_g_prev_p;
 		right_g <= x_max_g_prev_p;
-		top_g <= y_min_g;
+		top_g <= y_min_g_prev;
 		bottom_g <= y_max_g;
 		// blue
 		left_b <= x_min_b_prev_pp;
@@ -287,7 +288,7 @@ always @(*) begin	// Write words to FIFO as state machine advances
 			msg_buf_wr <= 1'b1;
 		end
 		3'b011: begin
-			msg_buf_in <= {4'h0,y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g[8:0]};
+			msg_buf_in <= {4'h0,y_max_r[8:0],x_min_g_prev_p[9:0],y_min_g_prev[8:0]};
 			msg_buf_wr <= 1'b1;
 		end
 		3'b100: begin
