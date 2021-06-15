@@ -23,11 +23,11 @@ Below are the PHP scripts executed and their functionality:
 
 7. index.php:  
         The main front-end user interface.   
-                Uses esp32-get-energy-array.php to visualize the battery life chart using the google chart tools.  
-                Uses esp32-get-position-array.php to visualize the rover path using google chart tools.  
-                Uses esp32-get-ping-pong.php to visualize the terrian map of obstacles using google chart tools.  
-                Uses esp-post-command to queue up commands into the remote database.  
-                Uses sql-query-latest.php to get the latest readings of position,speed,yaw and battery life  
+                - Uses esp32-get-energy-array.php to visualize the battery life chart using the google chart tools.  
+                - Uses esp32-get-position-array.php to visualize the rover path using google chart tools.  
+                - Uses esp32-get-ping-pong.php to visualize the terrian map of obstacles using google chart tools.  
+                - Uses esp-post-command to queue up commands into the remote database.  
+                - Uses sql-query-latest.php to get the latest readings of position,speed,yaw and battery life  
         
 8. sql-position-plot.php , sql-terrain-map.php, sql_energy_chart.php:  
         Used to visualize the path of the rover, the terrain map of obstacles, and the battery life chart respectively.   
