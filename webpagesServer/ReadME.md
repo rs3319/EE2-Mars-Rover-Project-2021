@@ -1,4 +1,4 @@
-hello,
+Below are the PHP scripts executed and their functionality:
 
 1. esp-log-PP.php:  
         PHP script called by the Mars Rover whenever an obstacle is sighted to log it's position and color in the 'ESP32PingPong' Database.  
