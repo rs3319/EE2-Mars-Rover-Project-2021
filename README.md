@@ -1,5 +1,5 @@
 # EE2-Mars-Rover-Project-2021
-Documentation and source code for the EE2 Mars Rover Group Project 2021. The aim of this project is to design and build an autonomous rover system that could be used in a remote location without direct supervision. The rover has a processing unit that is capable to receive movement commands and send status data. In doing this it needs to detect and avoid obstacles in its working area. Over time the rover should be able to build a map of its local working area (including those obstacles) on an offsite data store. A charging station will be also designed and implemented to charge the batteries used to power up the rover.
+The aim of this project is to design and build an autonomous rover system that could be used in a remote location without direct supervision. The rover has a processing unit that is capable to receive movement commands and send status data. In doing this it needs to detect and avoid obstacles in its working area. Over time the rover should be able to build a map of its local working area (including those obstacles) on an offsite data store. A charging station will be also designed and implemented to charge the batteries used to power up the rover.
 
 ## Mars Rover
 ![Mars Rover](rover.jpg)
