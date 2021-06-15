@@ -99,7 +99,7 @@ void HandleWarning(){
 void processVision(unsigned int Vbuff[7]){
   int area_threshold = 0x8;
   int upper_threshold = 1;
-  int midBound = 300;
+  int midBound = 3000;
   int threshold = area_threshold;
   int ball_d = 4;
   float focal_l = 800;
@@ -121,11 +121,11 @@ void processVision(unsigned int Vbuff[7]){
   int ph = abs((Vbuff[6] & 0x1FF) - (Vbuff[6] >> 19)); //fine
   int pmid = abs((Vbuff[6] & 0x1FF) + (Vbuff[6] >> 19))/2;
   
-  float rdist = (((float)rw/rh > 0.3) && ((float)rw/rh < 2) && (rw < 500)) ? ((ball_d * focal_l / rw) ) : 0 ;
-  float gdist = (((float)gw/gh > 0.3) && ((float)gw/gh < 2) && (gw < 500) ) ? ((ball_d * focal_l / gw) ) : 0;
-  float bdist = (((float)bw/bh > 0.3) && ((float)bw/bh < 2) && (bw < 500)) ? ((ball_d * focal_l / bw) ) : 0;
-  float ydist = (((float)yw/yh > 0.3) && ((float)yw/yh < 2) && (yw < 500) ) ? ((ball_d * focal_l / yw) ) : 0;
-  float pdist = (((float)pw/ph > 0.3) && ((float)pw/ph < 2) && (pw < 500)) ? ((ball_d * focal_l / pw) ) : 0;
+  float rdist = (((float)rw/rh > 0.5) && ((float)rw/rh < 1.5) && (rw < 500)) ? ((ball_d * focal_l / rw) ) : 0 ;
+  float gdist = (((float)gw/gh > 0.5) && ((float)gw/gh < 1.5) && (gw < 500) ) ? ((ball_d * focal_l / gw) ) : 0;
+  float bdist = (((float)bw/bh > 0.5) && ((float)bw/bh < 1.5) && (bw < 500)) ? ((ball_d * focal_l / bw) ) : 0;
+  float ydist = (((float)yw/yh > 0.5) && ((float)yw/yh < 1.5) && (yw < 500) ) ? ((ball_d * focal_l / yw) ) : 0;
+  float pdist = (((float)pw/ph > 0.5) && ((float)pw/ph < 1.5) && (pw < 500)) ? ((ball_d * focal_l / pw) ) : 0;
   int rpix = (Vbuff[1] >> 19) + rw/2;
   int gpix = ((Vbuff[2] >> 9)& 0x3FF) + gw/2;
   int bpix = (Vbuff[3]&0x3FF) + bw/2;
@@ -295,7 +295,15 @@ if(Serial1.available()){
   }else{
   prevX = PositionX;
   prevY = PositionY;
+  int oldyaw = yaw;
   sscanf(DriveStatus.c_str(),"%d,%d,%d,%d",&PositionX,&PositionY,&Speed,&yaw);
+  yaw = oldyaw;
+  if(CurrentCommand.substring(0,2) == "tl"){
+    yaw -= 90;
+  }
+  else if(CurrentCommand.substring(0,2) == "tr"){
+    yaw += 90;
+  }
   distTravelled += PositionX-prevX + PositionY-prevY;
   }
   }
