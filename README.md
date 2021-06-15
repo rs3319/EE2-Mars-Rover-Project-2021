@@ -4,6 +4,11 @@ Documentation and source code for the EE2 Mars Rover Group Project 2021. The aim
 ## Submodules
 
 ### [Vision](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/DE10_LITE_D8M_VIP_16)
+
 ### [Control](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/ESP32Files)
+1.Download the ESP32 Board package onto the Arduino IDE.   
+2.Enter WiFi SSID and password into lines 30-31.  
+3. (Optional) Set line 53 to true to enable pathfinding.  
+4. Upload the code onto the ESP32 and connect mount the device on the FPGA, then connect wires to the Arduino. (Lines 11-19 detail how they are meant to be connected)  
 ### [Command](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/webpagesServer)
 ### [Drive](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/Drive)
