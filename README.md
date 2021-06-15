@@ -19,4 +19,6 @@ Documentation and source code for the EE2 Mars Rover Group Project 2021. The aim
 3. (Optional) Set line 53 to true to enable pathfinding.  
 4. Upload the code onto the ESP32 and connect mount the device on the FPGA, then connect wires to the Arduino. (Lines 11-19 detail how they are meant to be connected)  
 ### [Command](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/webpagesServer)
+1. Use the webpage http://esp32-mars-rover.000webhostapp.com/ to access the dashboard.
 ### [Drive](https://github.com/rs3319/EE2-Mars-Rover-Project-2021/tree/main/Drive)
+1. Upload the .ino file to the arduino.
